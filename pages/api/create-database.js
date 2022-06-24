@@ -1,4 +1,4 @@
-import sqlMgr from "../../config/mySql";
+import sqlMgr from "../../lib/mySql";
 import {env} from "../../next.config";
 
 const handler = async (req, res) => {

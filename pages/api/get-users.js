@@ -1,4 +1,4 @@
-import sqlMgr from "../../config/mySql";
+import sqlMgr from "../../lib/mySql";
 
 const handler = async (req, res) => {
     await sqlMgr.query("SELECT * FROM testusers", (err, result) => {

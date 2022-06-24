@@ -1,24 +1,30 @@
-import sqlMgr from "../../config/mySql";
 import bcrypt from "bcrypt";
-import {env} from "../../next.config";
+import {connectToDatabase} from "../../lib/mongodb";
 
 const handler = async (req, res) => {
     const {email, password} = req.body;
 
-    if (email === env.EMAIL && password === env.PASSWORD) {
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = bcrypt.hash(password)
+    if (email === process.env.EMAIL && password === process.env.PASS) {
         try {
-            await sqlMgr.query(`INSERT INTO Users (email, password) VALUES ('${email}', '${password}')`, (err) => {
-                if (err) {
-                    return res.status(400).json({message: err.message})
-                }
-                return res.status(200).json({message: 'created record'})
-            });
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+            const {db} = await connectToDatabase();
+            const user = await db.collection('Users').findOne({email});
+            if (user) return res.status(400).json({message: "User already exists"});
+            const result = await db.collection('Users').insertOne({
+                email,
+                hashedPassword
+            })
+
+            if (result.acknowledged) {
+                return res.status(201).json({result})
+            }
         } catch (e) {
-            console.log({e})
+            console.log({e});
             return res.status(400).json({message: e.message})
         }
+    } else {
+        return res.status(400).json({message: "Make sure it is a post request with email and password"});
     }
 }
 

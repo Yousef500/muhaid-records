@@ -23,7 +23,9 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: 'El Messiri';
+  font-family: 'El Messiri', sans-serif;
   font-weight: normal;
   font-style: normal;
 }
+
+
