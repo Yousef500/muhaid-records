@@ -9,6 +9,7 @@ import {LoadingButton} from "@mui/lab";
 import {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {setLoggedIn} from "../src/app/slices/userSlice";
+import Head from "next/head";
 
 export async function getServerSideProps(ctx) {
     const accessToken = ctx.req.cookies.access_token;
@@ -46,6 +47,12 @@ const SignIn = () => {
     }
 
     return (
+        <>
+            <Head>
+                <title>تسجيل الدخول</title>
+                <meta name="description" content="Login to almuhaid records"/>
+                <link rel="icon" href="/mceicon.png"/>
+            </Head>
         <Grid container component="main" sx={{height: '100vh'}}>
             <Grid
                 item
@@ -127,6 +134,7 @@ const SignIn = () => {
                 </Box>
             </Grid>
         </Grid>
+        </>
     )
 }
 

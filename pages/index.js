@@ -46,7 +46,7 @@ export default function Home() {
             <Head>
                 <title>سجلَات المُحايد</title>
                 <meta name="description" content="Al Muhaid Redocrds"/>
-                <link rel="icon" href="/favicon.ico"/>
+                <link rel="icon" href="/mceicon.png"/>
             </Head>
 
             <Container>
