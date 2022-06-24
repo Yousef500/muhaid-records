@@ -1,11 +1,39 @@
 import Head from 'next/head'
-import {Box, Button, Container, Grid, IconButton, List, ListItem, ListItemText, Paper, Stack} from "@mui/material";
+import {Button, Container, Grid, IconButton, List, ListItem, ListItemText, Stack} from "@mui/material";
 import Navbar from "../components/Navbar";
 import SearchComponent from "../components/Search";
-import {AddCircleOutline, AddCircleOutlined, Delete, Download, Edit} from "@mui/icons-material";
+import {AddCircleOutline, Delete, Download, Edit} from "@mui/icons-material";
 import {toast} from "react-toastify";
+import {useDispatch, useSelector} from "react-redux";
+import {useEffect} from "react";
+import {setLoggedIn} from "../src/app/slices/userSlice";
+import {useRouter} from "next/router";
+
+export async function getServerSideProps(context) {
+    const accessToken = context.req.cookies.access_token
+    if (!accessToken) {
+        return {
+            redirect: {
+                destination: '/sign-in',
+                permanent: false
+            }
+        }
+    }
+    return {
+        props: {}
+    }
+}
 
 export default function Home() {
+    const loggedIn = useSelector(state => state.user.loggedIn)
+    const dispatch = useDispatch();
+    const router = useRouter()
+
+    useEffect(() => {
+        if (!loggedIn) {
+            router.push('/sign-in');
+        }
+    }, [loggedIn, router.route])
 
     const handleEdit = () => {
         console.log('edit')
@@ -40,8 +68,7 @@ export default function Home() {
                     <Grid item xs={12}>
                         <List>
                             <ListItem divider>
-                                <ListItemText>jbdfhbdfhbfjvglFBGHFBGB JBFJVGHABvgvgrhk eBFHLbسجل
-                                    تجريبي</ListItemText>
+                                <ListItemText>سجل تجريبي</ListItemText>
 
                                 <Stack direction={{xs: 'column', sm: 'row'}} spacing={1}>
                                     <IconButton color={'primary'}>

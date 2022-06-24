@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
 import {ThemeProvider} from '@mui/material/styles';
@@ -11,16 +12,18 @@ import {Slide, ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import {Provider} from "react-redux";
 import store from "../src/app/store";
+import {CircularProgress} from "@mui/material";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
 export default function MyApp(props) {
     const {Component, emotionCache = clientSideEmotionCache, pageProps} = props;
+    const [loading, setLoading] = useState(true);
 
-    // React.useEffect(() => {
-    //     document.body.style.overflowX = 'hidden'
-    // }, [])
+    useEffect(() => {
+        setLoading(false)
+    }, [])
 
     return (
         <CacheProvider value={emotionCache}>
@@ -31,7 +34,15 @@ export default function MyApp(props) {
                 {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
                 <CssBaseline/>
                 <Provider store={store}>
-                    <Component {...pageProps} />
+                    {loading ? <CircularProgress
+                            sx={{
+                                width: '100vw',
+                                height: '100vh',
+                                marginLeft: {xs: '40%'},
+                                marginTop: {xs: '80%', sm: '40%', md: '20%', lg: '15%'}
+                            }} thickness={4} size={'20%'} color={'secondary'}/> :
+                        <Component {...pageProps} />
+                    }
                 </Provider>
                 <ToastContainer position={'bottom-right'} theme={'colored'} draggable={false} pauseOnHover={true}
                                 closeOnClick={true} rtl={true} transition={Slide}
