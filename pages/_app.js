@@ -9,6 +9,8 @@ import createEmotionCache from '../src/createEmotionCache';
 import '../styles/globals.css'
 import {Slide, ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import {Provider} from "react-redux";
+import store from "../src/app/store";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -28,9 +30,12 @@ export default function MyApp(props) {
             <ThemeProvider theme={theme}>
                 {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
                 <CssBaseline/>
-                <Component {...pageProps} />
+                <Provider store={store}>
+                    <Component {...pageProps} />
+                </Provider>
                 <ToastContainer position={'bottom-right'} theme={'colored'} draggable={false} pauseOnHover={true}
-                                closeOnClick={true} rtl={true} transition={Slide} style={{fontFamily: 'El Messiri', textAlign: 'center'}}/>
+                                closeOnClick={true} rtl={true} transition={Slide}
+                                style={{fontFamily: 'El Messiri', textAlign: 'center'}}/>
             </ThemeProvider>
         </CacheProvider>
     );

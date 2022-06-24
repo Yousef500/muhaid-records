@@ -1,18 +1,26 @@
-import {TextField} from "@mui/material";
+import {Box, TextField} from "@mui/material";
+import {useState} from "react";
 
 const SearchComponent = () => {
+    const [searchTerm, setSearchTerm] = useState('');
     const handleSearch = (e) => {
-        if (e.key === 'Enter') {
-            console.log(e.target.value)
-        }
+        e.preventDefault();
+        e.stopPropagation();
+        console.log(searchTerm)
+    }
+
+    const handleInputChange = (e) => {
+        setSearchTerm(e.target.value);
     }
     return (
-        <TextField
-            fullWidth={true}
-            label={'ابحث'}
-            variant={'outlined'}
-            onKeyUp={handleSearch}
-        />
+        <Box component={'form'} onSubmit={handleSearch}>
+            <TextField
+                fullWidth={true}
+                label={'ابحث'}
+                variant={'outlined'}
+                onChange={handleInputChange}
+            />
+        </Box>
     );
 }
 
