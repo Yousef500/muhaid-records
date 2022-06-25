@@ -4,10 +4,8 @@ import Navbar from "../components/Navbar";
 import SearchComponent from "../components/Search";
 import {AddCircleOutline, Delete, Download, Edit} from "@mui/icons-material";
 import {toast} from "react-toastify";
-import {useDispatch, useSelector} from "react-redux";
-import {useEffect} from "react";
-import {setLoggedIn} from "../src/app/slices/userSlice";
-import {useRouter} from "next/router";
+import muAxios from "../lib/axios-config";
+import {saveAs} from 'file-saver'
 
 export async function getServerSideProps(context) {
     const accessToken = context.req.cookies.access_token
@@ -25,19 +23,22 @@ export async function getServerSideProps(context) {
 }
 
 export default function Home() {
-    const loggedIn = useSelector(state => state.user.loggedIn)
-    const dispatch = useDispatch();
-    const router = useRouter()
-
-    useEffect(() => {
-        if (!loggedIn) {
-            router.push('/sign-in');
-        }
-    }, [loggedIn, router.route])
 
     const handleEdit = () => {
         console.log('edit')
         toast.success('تم الاضافة بنجاح')
+    }
+
+    const handleDownload = () => {
+        try {
+            const {data} = muAxios.get('/testcreatepdf');
+            const blob = new Blob([data], {type: 'application/pdf'});
+            saveAs(blob, 'test.pdf')
+            toast.success('done')
+        } catch (e) {
+            console.log(e)
+            toast.error('wrong')
+        }
     }
 
     return (
@@ -71,7 +72,7 @@ export default function Home() {
                                 <ListItemText>سجل تجريبي</ListItemText>
 
                                 <Stack direction={{xs: 'column', sm: 'row'}} spacing={1}>
-                                    <IconButton color={'primary'}>
+                                    <IconButton color={'primary'} component={'a'} href={'/api/testcreatepdf'} download={'test'} target={'_blank'}>
                                         <Download/>
                                     </IconButton>
 

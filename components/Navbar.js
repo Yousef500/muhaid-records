@@ -1,21 +1,26 @@
-import {AppBar, Box, Button, Toolbar, Typography} from "@mui/material";
+import {AppBar, Box, Toolbar, Typography} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import muAxios from "../lib/axios-config";
 import {toast} from "react-toastify";
 import {setLoggedIn} from "../src/app/slices/userSlice";
 import {LoadingButton} from "@mui/lab";
 import {useState} from "react";
+import {useRouter} from "next/router";
 
 const Navbar = () => {
     const [loading, setLoading] = useState(false);
     const auth = useSelector(state => state.user.loggedIn);
     const dispatch = useDispatch()
+    const router = useRouter();
+
+
     const handleLogout = async () => {
         setLoading(true)
         try {
             const {data} = muAxios.get('/logout');
             dispatch(setLoggedIn(false));
-            toast.success('تم تسجيل الخروج بنجاح')
+            router.push('/sign-in')
+            toast.success('تم تسجيل الخروج بنجاح');
         } catch (e) {
             toast.error('لقد حدث خطأ ما')
         }
@@ -33,7 +38,8 @@ const Navbar = () => {
                         fontWeight={'bold'}
                     >سجلَات المُحايد</Typography>
                     {
-                        auth && <LoadingButton loading={loading} color={'inherit'} sx={{ml: 'auto'}} onClick={handleLogout}>تسجيل
+                        auth &&
+                        <LoadingButton loading={loading} color={'inherit'} sx={{ml: 'auto'}} onClick={handleLogout}>تسجيل
                             الخروج</LoadingButton>
                     }
                 </Toolbar>
