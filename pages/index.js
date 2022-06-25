@@ -5,7 +5,7 @@ import SearchComponent from "../components/Search";
 import {AddCircleOutline, Delete, Download, Edit} from "@mui/icons-material";
 import {toast} from "react-toastify";
 import muAxios from "../lib/axios-config";
-import {saveAs} from 'file-saver'
+const FileSaver = require('file-saver');
 
 export async function getServerSideProps(context) {
     const accessToken = context.req.cookies.access_token
@@ -33,7 +33,7 @@ export default function Home() {
         try {
             const {data} = muAxios.get('/testcreatepdf');
             const blob = new Blob([data], {type: 'application/pdf'});
-            saveAs(blob, 'test.pdf')
+            FileSaver.saveAs(blob, 'test.pdf')
             toast.success('done')
         } catch (e) {
             console.log(e)
@@ -72,7 +72,7 @@ export default function Home() {
                                 <ListItemText>سجل تجريبي</ListItemText>
 
                                 <Stack direction={{xs: 'column', sm: 'row'}} spacing={1}>
-                                    <IconButton color={'primary'} component={'a'} href={'/api/testcreatepdf'} download={'test'} target={'_blank'}>
+                                    <IconButton color={'primary'} onClick={handleDownload}>
                                         <Download/>
                                     </IconButton>
 
