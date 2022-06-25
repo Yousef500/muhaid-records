@@ -14,6 +14,8 @@ import {Provider} from "react-redux";
 import store from "../src/app/store";
 import {CircularProgress} from "@mui/material";
 
+// let persistor = persistStore(store);
+
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
@@ -34,6 +36,7 @@ export default function MyApp(props) {
                 {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
                 <CssBaseline/>
                 <Provider store={store}>
+                    {/*<PersistGate loading={null} persistor={persistor}>*/}
                     {loading ? <CircularProgress
                             sx={{
                                 width: '100vw',
@@ -43,6 +46,7 @@ export default function MyApp(props) {
                             }} thickness={4} size={'20%'} color={'secondary'}/> :
                         <Component {...pageProps} />
                     }
+                    {/*</PersistGate>*/}
                 </Provider>
                 <ToastContainer position={'bottom-right'} theme={'colored'} draggable={false} pauseOnHover={true}
                                 closeOnClick={true} rtl={true} transition={Slide}

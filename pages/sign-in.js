@@ -1,5 +1,5 @@
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import {Avatar, Box, Grid, IconButton, InputAdornment, Paper, TextField, Typography} from "@mui/material";
+import {Avatar, Box, Grid, IconButton, InputAdornment, Paper, Stack, TextField, Typography} from "@mui/material";
 import LoginIcon from '@mui/icons-material/Login';
 import {useForm} from "react-hook-form";
 import muAxios from "../lib/axios-config";
@@ -66,6 +66,7 @@ const SignIn = () => {
                     xs={false}
                     sm={6}
                     md={7}
+                    lg={8}
                     sx={{
                         backgroundImage: 'url(/static/images/Best.jpg)',
                         backgroundRepeat: 'no-repeat',
@@ -73,15 +74,15 @@ const SignIn = () => {
                         backgroundPosition: 'center',
                     }}
                 />
-                <Grid item xs={12} sm={6} md={5} component={Paper} elevation={6} square>
-                    <Box
+                <Grid item xs={12} sm={6} md={5} lg={4} component={Paper} elevation={6} square>
+                    <Stack
                         sx={{
                             my: 8,
                             mx: 4,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
                         }}
+                        spacing={2}
+                        direction={'column'}
+                        alignItems={'center'}
                     >
                         <Avatar sx={{m: 1, bgcolor: 'secondary.main'}}>
                             <LockOutlinedIcon/>
@@ -89,10 +90,12 @@ const SignIn = () => {
                         <Typography component="h1" variant="h5">
                             تسجيل الدخول
                         </Typography>
-                        <Box component="form" noValidate sx={{mt: 1}} onSubmit={handleSubmit(handleLogin)}>
 
+                        <Box width={'100%'} padding={2} component="form" noValidate sx={{mt: 1}}
+                             onSubmit={handleSubmit(handleLogin)}>
                             <TextField
                                 color={'primary'}
+                                dir={'ltr'}
                                 type={'email'}
                                 margin="normal"
                                 fullWidth
@@ -104,39 +107,65 @@ const SignIn = () => {
                                 }
                                 autoComplete="email"
                                 autoFocus
-                                dir={'ltr'}
                                 error={!!errors.email}
                                 helperText={errors?.email ? errors.email.message : ''}
-                                InputProps={{style: {fontSize: 20}}}
+                                variant={'standard'}
+                                InputProps={{style: {fontSize: 20, padding: 1}}}
                                 InputLabelProps={{style: {fontSize: 20}}}
                             />
 
-                            <TextField
-                                color={'primary'}
-                                margin="normal"
-                                fullWidth
-                                {
-                                    ...register('password', {
-                                        required: 'كلمة المرور مطلوبة'
-                                    })
-                                }
-                                label="*كلمة المرور"
-                                type={showPassword ? 'text' : 'password'}
-                                dir={'ltr'}
-                                error={!!errors.password}
-                                helperText={errors?.password ? errors.password.message : ''}
-                                InputProps={{
-                                    style: {fontSize: 20},
-                                    startAdornment: (
-                                        <InputAdornment position={'end'}>
-                                            <IconButton onClick={handleShowPassword}>
-                                                {showPassword ? <VisibilityOff/> : <Visibility/>}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    )
-                                }}
-                                InputLabelProps={{style: {fontSize: 20}}}
-                            />
+                            {/*<TextField*/}
+                            {/*    color={'primary'}*/}
+                            {/*    margin="normal"*/}
+                            {/*    fullWidth*/}
+                            {/*    {*/}
+                            {/*        ...register('password', {*/}
+                            {/*            required: 'كلمة المرور مطلوبة'*/}
+                            {/*        })*/}
+                            {/*    }*/}
+                            {/*    label="*كلمة المرور"*/}
+                            {/*    type={showPassword ? 'text' : 'password'}*/}
+                            {/*    error={!!errors.password}*/}
+                            {/*    helperText={errors?.password ? errors.password.message : ''}*/}
+                            {/*
+                            InputProps={{*/}
+                            {/*        style: {fontSize: 20, direction: 'ltr'},*/}
+                            {/*        endAdornment: (*/}
+                            {/*            <InputAdornment position={'end'}>*/}
+                            {/*                <IconButton onClick={handleShowPassword}>*/}
+                            {/*                    {showPassword ? <VisibilityOff/> : <Visibility/>}*/}
+                            {/*                </IconButton>*/}
+                            {/*            </InputAdornment>*/}
+                            {/*        )*/}
+                            {/*    }}*/}
+                            {/*    InputLabelProps={{style: {fontSize: 20}}}*/}
+                            {/*/>*/}
+
+                            <Stack spacing={1} direction={'row'} dir={'rtl'} justifyContent={'space-evenly'}>
+                                <TextField
+                                    color={'primary'}
+                                    dir={'ltr'}
+                                    margin="normal"
+                                    fullWidth
+                                    {
+                                        ...register('password', {
+                                            required: 'كلمة المرور مطلوبة'
+                                        })
+                                    }
+                                    label="*كلمة المرور"
+                                    type={showPassword ? 'text' : 'password'}
+                                    error={!!errors.password}
+                                    helperText={errors?.password ? errors.password.message : ''}
+                                    variant={'standard'}
+                                    InputProps={{
+                                        style: {fontSize: 20, padding: 1},
+                                    }}
+                                    InputLabelProps={{style: {fontSize: 20}}}
+                                />
+                                <IconButton disableRipple onClick={handleShowPassword}>
+                                    {showPassword ? <VisibilityOff sx={{mt: 4}}/> : <Visibility sx={{mt: 4}}/>}
+                                </IconButton>
+                            </Stack>
                             <LoadingButton
                                 loading={loading}
                                 type="submit"
@@ -150,7 +179,7 @@ const SignIn = () => {
                                 تسجيل الدخول
                             </LoadingButton>
                         </Box>
-                    </Box>
+                    </Stack>
                 </Grid>
             </Grid>
         </>

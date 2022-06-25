@@ -1,11 +1,11 @@
 import Head from 'next/head'
-import {Button, Container, Grid, IconButton, List, ListItem, ListItemText, Stack} from "@mui/material";
+import {Button, Container, Grid} from "@mui/material";
 import Navbar from "../components/Navbar";
 import SearchComponent from "../components/Search";
-import {AddCircleOutline, Delete, Download, Edit} from "@mui/icons-material";
+import {AddCircleOutline} from "@mui/icons-material";
 import {toast} from "react-toastify";
-import muAxios from "../lib/axios-config";
-const FileSaver = require('file-saver');
+import Projects from "../components/Projects";
+import CustomPagination from "../components/Pagination";
 
 export async function getServerSideProps(context) {
     const accessToken = context.req.cookies.access_token
@@ -29,18 +29,6 @@ export default function Home() {
         toast.success('تم الاضافة بنجاح')
     }
 
-    const handleDownload = () => {
-        try {
-            const {data} = muAxios.get('/testcreatepdf');
-            const blob = new Blob([data], {type: 'application/pdf'});
-            FileSaver.saveAs(blob, 'test.pdf')
-            toast.success('done')
-        } catch (e) {
-            console.log(e)
-            toast.error('wrong')
-        }
-    }
-
     return (
         <>
             <Navbar/>
@@ -50,7 +38,7 @@ export default function Home() {
                 <link rel="icon" href="/mceicon.png"/>
             </Head>
 
-            <Container>
+            <Container maxWidth={'fluid'}>
 
                 <Grid container
                       alignItems="center"
@@ -67,25 +55,20 @@ export default function Home() {
                     <Grid item xs={4}></Grid>
 
                     <Grid item xs={12}>
-                        <List>
-                            <ListItem divider>
-                                <ListItemText>سجل تجريبي</ListItemText>
+                        <Projects/>
+                    </Grid>
 
-                                <Stack direction={{xs: 'column', sm: 'row'}} spacing={1}>
-                                    <IconButton color={'primary'} onClick={handleDownload}>
-                                        <Download/>
-                                    </IconButton>
-
-                                    <IconButton color={'secondary'}>
-                                        <Edit/>
-                                    </IconButton>
-
-                                    <IconButton color={'warning'}>
-                                        <Delete/>
-                                    </IconButton>
-                                </Stack>
-                            </ListItem>
-                        </List>
+                    <Grid item xs={12} my={4}>
+                        <Grid
+                            container
+                            spacing={0}
+                            direction="column"
+                            alignItems="center"
+                            justifyContent="center">
+                            <Grid item xs={12}>
+                                <CustomPagination/>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Container>

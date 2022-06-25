@@ -1,24 +1,22 @@
 import {Box, TextField} from "@mui/material";
-import {useState} from "react";
+import {useForm} from "react-hook-form";
 
 const SearchComponent = () => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const handleSearch = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log(searchTerm)
+    const {register, handleSubmit} = useForm();
+
+    const handleSearch = (data) => {
+        console.log(data.searchTerm)
     }
 
-    const handleInputChange = (e) => {
-        setSearchTerm(e.target.value);
-    }
     return (
-        <Box component={'form'} onSubmit={handleSearch}>
+        <Box component={'form'} onSubmit={handleSubmit(handleSearch)}>
             <TextField
+                {
+                    ...register("searchTerm")
+                }
                 fullWidth={true}
                 label={'ابحث'}
                 variant={'outlined'}
-                onChange={handleInputChange}
             />
         </Box>
     );
