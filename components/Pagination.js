@@ -17,7 +17,8 @@ const CustomPagination = () => {
         dispatch(setPagination({pageNumber: val}));
     }
     return (
-        <Pagination sx={{width: '100%'}} count={count / pageSize} color={'secondary'} size={'large'}
+        <Pagination sx={{width: '100%', fontWeight: 'extra-bold'}} count={count / pageSize} color={'secondary'}
+                    size={'large'}
                     showFirstButton showLastButton onChange={handleChange}/>
     )
 }

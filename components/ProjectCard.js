@@ -1,4 +1,4 @@
-import {Card, CardActions, CardContent, CardMedia, Chip, Typography} from "@mui/material";
+import {Card, CardActions, CardContent, CardMedia, Chip, Stack, Typography} from "@mui/material";
 import {Delete, Download, Edit} from "@mui/icons-material";
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import {toast} from "react-toastify";
@@ -25,7 +25,8 @@ const ProjectCard = ({name, description}) => {
                 <Typography variant={'body1'} color={'text.primary'}>{description}</Typography>
             </CardContent>
             <CardActions sx={{mb: 2}}>
-                <Chip icon={<FileDownloadOutlinedIcon/>} color={"primary"} onClick={handleDownload} label={'استخراج'}/>
+                <Chip icon={<FileDownloadOutlinedIcon/>} color={"primary"} onClick={handleDownload}
+                      label={'استخراج'}/>
                 <Chip icon={<Edit/>} color={"secondary"} label={'تعديل'}/>
                 <Chip icon={<Delete/>} color={"error"} label={'حذف'}/>
             </CardActions>

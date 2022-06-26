@@ -55,11 +55,6 @@ const SignIn = () => {
 
     return (
         <>
-            <Head>
-                <title>تسجيل الدخول</title>
-                <meta name="description" content="Login to almuhaid records"/>
-                <link rel="icon" href="/mceicon.png"/>
-            </Head>
             <Grid container component="main" sx={{height: '100vh'}}>
                 <Grid
                     item

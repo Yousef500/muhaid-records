@@ -30,7 +30,10 @@ export default function MyApp(props) {
     return (
         <CacheProvider value={emotionCache}>
             <Head>
+                <title>سجلَات المُحايد</title>
                 <meta name="viewport" content="initial-scale=1, width=device-width"/>
+                <meta name="description" content="Al Muhaid Redocrds"/>
+                <link rel="icon" href="/mceicon.png"/>
             </Head>
             <ThemeProvider theme={theme}>
                 {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
