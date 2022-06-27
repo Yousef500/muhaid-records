@@ -19,7 +19,7 @@ const ProjectCard = ({name, description}) => {
 
     return (
         <Card elevation={6} sx={{my: 2}}>
-            <CardMedia component={'img'} image={'/static/images/High-res.jpg'}/>
+            <CardMedia component={'img'} height={'290'} image={'/static/images/High-res.jpg'}/>
             <CardContent>
                 <Typography gutterBottom variant={'h5'} component={'div'}>{name}</Typography>
                 <Typography variant={'body1'} color={'text.primary'}>{description}</Typography>

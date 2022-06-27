@@ -13,13 +13,17 @@ export const projectsSlice = createSlice({
             state.projects = action.payload;
         },
         setPagination: (state, action) => {
-            state.count = action.payload.count ?? state.count;
+            state.count = action.payload.count ?? state.projects.length;
             state.pageSize = action.payload.pageSize ?? state.pageSize;
             state.pageNumber = action.payload.pageNumber ?? state.pageNumber;
+        },
+        addProject: (state, action) => {
+            state.projects.unshift(action.payload);
+            state.count++
         }
     }
 });
 
-export const {setProjects, setPagination} = projectsSlice.actions;
+export const {setProjects, setPagination, addProject} = projectsSlice.actions;
 
 export default projectsSlice.reducer;

@@ -4,8 +4,7 @@ import {setPagination} from "../src/app/slices/projectsSlice";
 import {useEffect} from "react";
 
 const CustomPagination = () => {
-    const count = useSelector(state => state.projects.count);
-    const pageSize = useSelector(state => state.projects.pageSize);
+    const {pageSize, count} = useSelector(state => state.projects);
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -17,7 +16,7 @@ const CustomPagination = () => {
         dispatch(setPagination({pageNumber: val}));
     }
     return (
-        <Pagination sx={{width: '100%', fontWeight: 'extra-bold'}} count={count / pageSize} color={'secondary'}
+        <Pagination sx={{width: '100%', fontWeight: 'extra-bold'}} count={Math.ceil(count / pageSize)} color={'secondary'}
                     size={'large'}
                     showFirstButton showLastButton onChange={handleChange}/>
     )
