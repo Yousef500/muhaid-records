@@ -20,10 +20,13 @@ export const projectsSlice = createSlice({
         addProject: (state, action) => {
             state.projects.unshift(action.payload);
             state.count++
+        },
+        deleteProject: (state, action) => {
+            state.projects = state.projects.filter((proj, id) => id !== action.payload)
         }
     }
 });
 
-export const {setProjects, setPagination, addProject} = projectsSlice.actions;
+export const {setProjects, setPagination, addProject, deleteProject} = projectsSlice.actions;
 
 export default projectsSlice.reducer;

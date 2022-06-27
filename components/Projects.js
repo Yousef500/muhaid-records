@@ -2,7 +2,7 @@ import ProjectCard from "./ProjectCard";
 import {Grid} from "@mui/material";
 import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {setPagination, setProjects} from "../src/app/slices/projectsSlice";
+import {setPagination} from "../src/app/slices/projectsSlice";
 
 const Projects = () => {
     const dispatch = useDispatch();
@@ -18,7 +18,6 @@ const Projects = () => {
     useEffect(() => {
         // dispatch(setProjects([projects, ...initialProjects]))
         dispatch(setPagination({count: projects.length}))
-        console.log(projects)
     }, [projects]);
 
     return (
@@ -26,7 +25,8 @@ const Projects = () => {
             {
                 projects.slice(((pageNumber - 1) * pageSize), (pageNumber * pageSize)).map((project, index) => (
                     <Grid key={index} item xs={12} sm={6} md={4} xl={3}>
-                        <ProjectCard name={project.projectName} description={project.projectAddress}/>
+                        <ProjectCard name={project.projectName} description={project.projectAddress}
+                                     img={project.images[0]} id={index}/>
                     </Grid>
                 ))
             }
