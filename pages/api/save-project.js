@@ -34,7 +34,8 @@ const handler = async (req, res) => {
                         images: dbImages,
                         createdAt: now,
                         updatedAt: now,
-                        createdBy: verifiedUser.email
+                        createdBy: verifiedUser.email,
+                        updatedBy: verifiedUser.email
                     });
                     return res.status(201).json({project: {...data, images: dbImages}});
                 } catch (e) {
