@@ -14,7 +14,7 @@ const handler = async (req, res) => {
                 if (!user) return res.status(403).json({message: "هذا البريد غير مسجل"});
                 const match = await bcrypt.compare(password, user.hashedPassword);
                 if (!match) return res.status(403).json({message: 'تأكد من كلمة المرور'})
-                const privateKey = fs.readFileSync('./src/app/privateKey.pem');
+                const privateKey = await fs.promises.readFile('./src/app/privateKey.pem');
                 const data = {
                     time: new Date(),
                     email,

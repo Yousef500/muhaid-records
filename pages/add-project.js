@@ -12,6 +12,7 @@ import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import styled from "@emotion/styled";
 import muAxios from "../lib/axios-config";
 import {LoadingButton} from '@mui/lab'
+import {toast} from "react-toastify";
 
 const AddProject = () => {
     const [activeStep, setActiveStep] = useState(0);
@@ -39,16 +40,20 @@ const AddProject = () => {
             })
         })
 
-        const res = await Promise.all(files);
-        return res;
+        return await Promise.all(files);
     }
 
     const handleCreateProject = async (data) => {
         setLoading(true)
-        const images = await readImages(data.images);
-        const res = await muAxios.post('/save-project', {...data, images: images});
-        dispatch(addProject({...data, images: images}));
-        router.push('/')
+        try {
+            const images = await readImages(data.images);
+            const res = await muAxios.post('/save-project', {...data, images: images});
+            dispatch(addProject({...data, images: images}));
+            router.push('/')
+            toast.success('تم إضافة المشروع بنجاح')
+        } catch (e) {
+            toast.error(e.response.data.message ?? 'لقد حدث خطأ ما')
+        }
         setLoading(false);
     }
 

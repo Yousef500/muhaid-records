@@ -1,4 +1,4 @@
-import {Card, CardActions, CardContent, CardMedia, Chip, Divider, Grid, Typography} from "@mui/material";
+import {Button, Card, CardActions, CardContent, CardMedia, Divider, Grid, Typography} from "@mui/material";
 import {Delete, Edit} from "@mui/icons-material";
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import {toast} from "react-toastify";
@@ -34,10 +34,13 @@ const ProjectCard = ({name, description, img, id}) => {
             </CardContent>
             <CardActions sx={{my: 2}}>
                 <Grid spacing={1} container alignItems={'center'} justifyContent={'center'}>
-                    <Chip icon={<FileDownloadOutlinedIcon/>} color={"primary"} onClick={handleDownload}
-                          label={'استخراج'}/>
-                    <Chip sx={{mx: 1}} icon={<Edit/>} color={"secondary"} label={'تعديل'}/>
-                    <Chip icon={<Delete/>} color={"error"} onClick={handleDelete} label={'حذف'}/>
+                    <Button sx={{borderRadius: '1rem'}} startIcon={<FileDownloadOutlinedIcon/>} variant={'contained'}
+                            color={"primary"}
+                            onClick={handleDownload}>استخراج</Button>
+                    <Button sx={{mx: 1, borderRadius: '1rem'}} startIcon={<Edit/>} variant={'outlined'}
+                            color={"secondary"}>تعديل</Button>
+                    <Button sx={{borderRadius: '1rem'}} startIcon={<Delete/>} color={"error"} onClick={handleDelete}
+                            label={'حذف'}>حذف</Button>
                 </Grid>
             </CardActions>
         </Card>

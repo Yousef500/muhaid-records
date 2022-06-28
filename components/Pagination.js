@@ -7,16 +7,12 @@ const CustomPagination = () => {
     const {pageSize, count} = useSelector(state => state.projects);
     const dispatch = useDispatch()
 
-    useEffect(() => {
-        console.log(pageSize, count)
-    }, [count, pageSize])
-
-
     const handleChange = (e, val) => {
         dispatch(setPagination({pageNumber: val}));
     }
     return (
-        <Pagination sx={{width: '100%', fontWeight: 'extra-bold'}} count={Math.ceil(count / pageSize)} color={'secondary'}
+        <Pagination sx={{width: '100%', fontWeight: 'extra-bold'}} count={Math.ceil(count / pageSize)}
+                    color={'secondary'}
                     size={'large'}
                     showFirstButton showLastButton onChange={handleChange}/>
     )
