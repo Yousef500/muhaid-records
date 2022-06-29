@@ -49,7 +49,7 @@ const AddProject = () => {
             const images = await readImages(data.images);
             const res = await muAxios.post('/save-project', {...data, images: images});
             dispatch(addProject({...data, images: images}));
-            router.push('/')
+            await router.push('/?currentPage=1&pageSize=5')
             toast.success('تم إضافة المشروع بنجاح')
         } catch (e) {
             toast.error(e.response.data.message ?? 'لقد حدث خطأ ما')
@@ -57,8 +57,8 @@ const AddProject = () => {
         setLoading(false);
     }
 
-    const handleCancel = () => {
-        router.push('/')
+    const handleCancel = async () => {
+        await router.push('/?currentPage=1&pageSize=5')
     }
 
     return (

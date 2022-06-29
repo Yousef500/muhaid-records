@@ -23,10 +23,10 @@ const ProjectCard = ({name, description, img, id}) => {
     const handleDelete = () => {
         dispatch(deleteProject(id))
     }
-
+// img ?? '/static/images/High-res.jpg'
     return (
         <Card sx={{my: 2}} elevation={6}>
-            <CardMedia component={'img'} height={'290'} image={img ?? '/static/images/High-res.jpg'}/>
+            <CardMedia component={'img'} height={'290'} width={'100vw'} image={img ?? '/static/images/Best.jpg'}/>
             <Divider/>
             <CardContent sx={{height: 180, overflowY: 'auto'}}>
                 <Typography gutterBottom variant={'h5'} component={'div'}>{name}</Typography>

@@ -22,8 +22,8 @@ const handler = async (req, res) => {
                 data.images.map(async (imageString) => {
                     const date = Date.now();
                     const type = imageString.split(';')[0].split('/')[1];
-                    dbImages.push(`/static/images/${projectName}/${projectName}-${date}.${type}`)
-                    const image = new Buffer(imageString.split('base64,')[1], 'base64');
+                    dbImages.push(`/static/images/${projectName}/${date}.${type}`)
+                    const image = Buffer.from(imageString.split('base64,')[1], 'base64');
                     await fs.promises.writeFile(`./public/static/images/${projectName}/${date}.${type}`, image);
                 })
                 try {

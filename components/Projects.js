@@ -18,7 +18,7 @@ const Projects = () => {
                 projects.slice(((pageNumber - 1) * pageSize), (pageNumber * pageSize)).map((project, index) => (
                     <Grid key={index} item xs={12} sm={6} md={6} lg={4} xl={3}>
                         <ProjectCard name={project.projectName} description={project.projectAddress}
-                                     img={project.images[0]} id={index}/>
+                                     img={project.images[0]} id={project._id}/>
                     </Grid>
                 ))
             }

@@ -1,32 +1,25 @@
-import {connectToDatabase} from "../lib/mongodb";
-import {useDispatch} from "react-redux";
-import {useEffect} from "react";
-import {setProjects} from "../src/app/slices/projectsSlice";
-import Navbar from "../components/Navbar";
+import Navbar from "../../../components/Navbar";
 import Head from "next/head";
 import {Button, Container, Grid} from "@mui/material";
-import SearchComponent from "../components/Search";
+import SearchComponent from "../../../components/Search";
 import Link from "next/link";
 import {AddCircleOutline} from "@mui/icons-material";
-import Projects from "../components/Projects";
-import CustomPagination from "../components/Pagination";
+import Projects from "../../../components/Projects";
+import CustomPagination from "../../../components/Pagination";
+import {connectToDatabase} from "../../../lib/mongodb";
+import {useEffect} from "react";
+import {useDispatch} from "react-redux";
+import {setProjects} from "../../../src/app/slices/projectsSlice";
+
 
 export async function getServerSideProps(ctx) {
-    const accessToken = ctx.req.cookies.access_token
-    if (!accessToken) {
-        return {
-            redirect: {
-                destination: '/sign-in',
-                permanent: false
-            }
-        }
-    }
-
-    const {currentPage, pageSize} = ctx.query;
+    console.log(ctx.query)
+    const {currentPage, pageSize} = ctx.req.query;
     const skipParams = (Number(currentPage) - 1) * Number(pageSize);
     const {db} = await connectToDatabase();
     const cursor = await db.collection('Projects').find({}, {skip: skipParams, limit: Number(pageSize)});
     const projects = await cursor.toArray()
+    console.log('projects', projects)
     return {
         props: {
             projects
@@ -34,8 +27,14 @@ export async function getServerSideProps(ctx) {
     }
 }
 
+// export async function getStaticPaths() {
+//     return {
+//         paths: [],
+//         fallback: true
+//     }
+// }
 
-export default function Home({projects}) {
+const ProjectsPage = ({projects}) => {
     const dispatch = useDispatch();
     useEffect(() => {
         if (projects) {
@@ -82,3 +81,5 @@ export default function Home({projects}) {
         </>
     )
 }
+
+export default ProjectsPage

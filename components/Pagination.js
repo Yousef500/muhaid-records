@@ -1,7 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
-import {Pagination, Stack} from "@mui/material";
+import {Grid, Pagination} from "@mui/material";
 import {setPagination} from "../src/app/slices/projectsSlice";
-import {useEffect} from "react";
 
 const CustomPagination = () => {
     const {pageSize, count} = useSelector(state => state.projects);
@@ -11,10 +10,16 @@ const CustomPagination = () => {
         dispatch(setPagination({pageNumber: val}));
     }
     return (
-        <Pagination sx={{width: '100%', fontWeight: 'extra-bold'}} count={Math.ceil(count / pageSize)}
-                    color={'secondary'}
-                    size={'large'}
-                    showFirstButton showLastButton onChange={handleChange}/>
+        <Grid
+            container
+            spacing={0}
+            alignItems="center"
+            justifyContent="center">
+            <Pagination sx={{fontWeight: 'extra-bold'}} count={Math.ceil(count / pageSize)}
+                        color={'secondary'}
+                        size={'large'}
+                        showFirstButton showLastButton onChange={handleChange}/>
+        </Grid>
     )
 }
 

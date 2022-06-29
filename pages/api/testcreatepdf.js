@@ -5,7 +5,7 @@ import hbs from 'handlebars';
 const handler = async (req, res) => {
     const {name, description} = req.query;
     try {
-        const doc = fs.readFileSync('./test.html', 'utf-8');
+        const doc = fs.readFileSync('./public/static/report-templates/report1.html', 'utf-8');
         const template = await hbs.compile(doc);
         const content = template({
             name,
@@ -14,6 +14,10 @@ const handler = async (req, res) => {
         const browser = await puppeteer.launch({headless: true});
         const page = await browser.newPage();
         await page.setContent(content);
+        await page.addStyleTag({
+            path: './mdb.rtl.min.css'
+        })
+        await page.waitForSelector('img')
         const buffer = await page.pdf({
             format: 'A4',
             printBackground: true,

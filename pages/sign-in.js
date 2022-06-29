@@ -18,7 +18,7 @@ export async function getServerSideProps(ctx) {
     if (accessToken) {
         return {
             redirect: {
-                destination: '/',
+                destination: '/1/5',
                 permanent: false
             }
         }
