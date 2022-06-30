@@ -63,7 +63,7 @@ const SignIn = () => {
                     md={7}
                     lg={8}
                     sx={{
-                        backgroundImage: 'url(/static/images/Best.jpg)',
+                        backgroundImage: 'url(/static/images/MainBanner.jpg)',
                         backgroundRepeat: 'no-repeat',
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',

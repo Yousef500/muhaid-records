@@ -17,7 +17,7 @@ import {toast} from "react-toastify";
 const AddProject = () => {
     const [activeStep, setActiveStep] = useState(0);
     const [loading, setLoading] = useState(false);
-    const {register, handleSubmit, setValue} = useForm();
+    const {register, handleSubmit, formState: {errors}} = useForm();
     const dispatch = useDispatch();
     const router = useRouter();
 
@@ -85,9 +85,9 @@ const AddProject = () => {
                             </Stepper>
 
                             {
-                                activeStep === 0 ? <FirstStep register={register}/>
-                                    : activeStep === 1 ? <SecondStep register={register}/>
-                                        : activeStep === 2 && <ThirdStep register={register}/>
+                                activeStep === 0 ? <FirstStep errors={errors} register={register}/>
+                                    : activeStep === 1 ? <SecondStep errors={errors} register={register}/>
+                                        : activeStep === 2 && <ThirdStep errors={errors} register={register}/>
                             }
 
                         </Grid>

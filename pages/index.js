@@ -12,7 +12,7 @@ import Projects from "../components/Projects";
 import CustomPagination from "../components/Pagination";
 
 export async function getServerSideProps(ctx) {
-    const accessToken = ctx.req.cookies.access_token
+    const accessToken = ctx.req.cookies.access_token;
     if (!accessToken) {
         return {
             redirect: {
@@ -61,14 +61,14 @@ export default function Home({projects}) {
                         <SearchComponent/>
                     </Grid>
 
-                    <Grid item xs={4}></Grid>
+                    <Grid item xs={4}/>
                     <Grid item xs={4}>
                         <Link href={'/add-project'}>
                             <Button fullWidth variant={'contained'} size={'large'}
                                     startIcon={<AddCircleOutline/>}>إضافة مشروع</Button>
                         </Link>
                     </Grid>
-                    <Grid item xs={4}></Grid>
+                    <Grid item xs={4}/>
 
                     <Grid item xs={12}>
                         <Projects/>

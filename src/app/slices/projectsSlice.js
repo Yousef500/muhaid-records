@@ -1,4 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
+import muAxios from "../../../lib/axios-config";
+import {toast} from "react-toastify";
 
 export const projectsSlice = createSlice({
     name: 'projects',
@@ -21,8 +23,19 @@ export const projectsSlice = createSlice({
             state.projects.unshift(action.payload);
             state.count++
         },
-        deleteProject: (state, action) => {
-            state.projects = state.projects.filter((proj, id) => id !== action.payload)
+        deleteProject: async (state, action) => {
+            const projectName = action.payload;
+            try {
+                const response = await muAxios.post('/delete-project', {projectName});
+                // state.projects = state.projects.filter((proj, id) => id !== action.payload)
+                console.log(state.projects)
+                const {data} = await muAxios.get(`/fetch-projects?currentPage${state.pageNumber}&pageSize=${state.pageSize}`);
+                state.projects = data.projects;
+                console.log(state.projects)
+                toast.success('تم حذف المشروع بنجاح')
+            } catch (e) {
+                toast.error(e.response.data.message ?? 'لقد حدث خطأ ما')
+            }
         }
     }
 });

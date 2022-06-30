@@ -5,7 +5,7 @@ import hbs from 'handlebars';
 const handler = async (req, res) => {
     const {name, description} = req.query;
     try {
-        const doc = fs.readFileSync('./public/static/report-templates/report1.html', 'utf-8');
+        const doc = await fs.promises.readFile('./public/static/report-templates/report1.html', 'utf-8');
         const template = await hbs.compile(doc);
         const content = template({
             name,
@@ -18,10 +18,12 @@ const handler = async (req, res) => {
             path: './mdb.rtl.min.css'
         })
         await page.waitForSelector('img')
+        await page.emulateMediaType('screen');
+
         const buffer = await page.pdf({
             format: 'A4',
             printBackground: true,
-        })
+        });
         await browser.close();
 
         res.setHeader('Content-Type', 'application/pdf');

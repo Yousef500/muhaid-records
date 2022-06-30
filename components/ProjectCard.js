@@ -1,12 +1,30 @@
-import {Button, Card, CardActions, CardContent, CardMedia, Divider, Grid, Typography} from "@mui/material";
-import {Delete, Edit} from "@mui/icons-material";
+import {
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    CardMedia,
+    Dialog,
+    DialogActions,
+    DialogTitle,
+    Divider,
+    Grid,
+    Stack,
+    Typography
+} from "@mui/material";
+import {Delete, Edit, Save} from "@mui/icons-material";
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import {toast} from "react-toastify";
 import {useDispatch} from "react-redux";
 import {deleteProject} from "../src/app/slices/projectsSlice";
+import {useState} from "react";
+import {LoadingButton} from "@mui/lab";
 
 const ProjectCard = ({name, description, img, id}) => {
     const dispatch = useDispatch();
+    const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+
     const handleDownload = () => {
         try {
             const aTag = document.createElement("a");
@@ -20,30 +38,75 @@ const ProjectCard = ({name, description, img, id}) => {
         }
     }
 
-    const handleDelete = () => {
-        dispatch(deleteProject(id))
+    const handleClose = () => {
+        setOpen(false);
     }
-// img ?? '/static/images/High-res.jpg'
+
+    const handleOpen = () => {
+        setOpen(true);
+    }
+
+    const handleDelete = () => {
+        setLoading(true)
+        dispatch(deleteProject(name))
+        setLoading(false);
+        handleClose();
+    }
     return (
-        <Card sx={{my: 2}} elevation={6}>
-            <CardMedia component={'img'} height={'290'} width={'100vw'} image={img ?? '/static/images/Best.jpg'}/>
-            <Divider/>
-            <CardContent sx={{height: 180, overflowY: 'auto'}}>
-                <Typography gutterBottom variant={'h5'} component={'div'}>{name}</Typography>
-                <Typography variant={'body1'} color={'text.primary'}>{description}</Typography>
-            </CardContent>
-            <CardActions sx={{my: 2}}>
-                <Grid spacing={1} container alignItems={'center'} justifyContent={'center'}>
-                    <Button sx={{borderRadius: '1rem'}} startIcon={<FileDownloadOutlinedIcon/>} variant={'contained'}
-                            color={"primary"}
-                            onClick={handleDownload}>استخراج</Button>
-                    <Button sx={{mx: 1, borderRadius: '1rem'}} startIcon={<Edit/>} variant={'outlined'}
-                            color={"secondary"}>تعديل</Button>
-                    <Button sx={{borderRadius: '1rem'}} startIcon={<Delete/>} color={"error"} onClick={handleDelete}
-                            label={'حذف'}>حذف</Button>
-                </Grid>
-            </CardActions>
-        </Card>
+        <>
+            <Card sx={{my: 2}} elevation={6}>
+                <CardMedia component={'img'} height={'290'} width={'100vw'} image={img ?? '/static/images/Best.jpg'}/>
+                <Divider/>
+                <CardContent sx={{height: 180, overflowY: 'auto'}}>
+                    <Typography gutterBottom variant={'h5'} component={'div'}>{name}</Typography>
+                    <Typography variant={'body1'} color={'text.primary'}>{description}</Typography>
+                </CardContent>
+                <CardActions sx={{my: 2}}>
+                    <Grid spacing={1} container alignItems={'center'} justifyContent={'center'}>
+                        <Button sx={{borderRadius: '1rem'}} startIcon={<FileDownloadOutlinedIcon/>}
+                                variant={'contained'}
+                                color={"primary"}
+                                onClick={handleDownload}>استخراج</Button>
+                        <Button sx={{mx: 1, borderRadius: '1rem'}} startIcon={<Edit/>} variant={'outlined'}
+                                color={"secondary"}>تعديل</Button>
+                        <Button sx={{borderRadius: '1rem'}} startIcon={<Delete/>} color={"error"} onClick={handleOpen}
+                                label={'حذف'}>حذف</Button>
+                    </Grid>
+                </CardActions>
+            </Card>
+            {open && (
+                <Dialog open={open} onClose={handleClose}>
+                    <Grid container spacing={2} mb={2} padding={2}>
+                        <Grid item xs={12}>
+                            <DialogTitle>
+                                <Grid container alignItems={'center'} justifyContent={'center'}>
+                                    هل أنت متأكد من حذف {name}؟
+                                </Grid>
+                            </DialogTitle>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <DialogActions sx={{width: '100%'}}>
+                                <Grid container alignItems={'center'} justifyContent={'center'}>
+                                    <Stack width={'100%'} direction={'row'} justifyContent={'space-evenly'}
+                                           alignItems={'center'}
+                                           spacing={1}>
+                                        <LoadingButton loading={loading} sx={{borderRadius: '1rem'}} color={'error'}
+                                                       variant={'outlined'}
+                                                       fullWidth
+                                                       startIcon={<Delete/>} onClick={handleDelete}>نعم</LoadingButton>
+                                        <Button sx={{borderRadius: '1rem'}} color={'secondary'} fullWidth
+                                                variant={'contained'} startIcon={<Save/>} onClick={handleClose}
+                                        >
+                                            لا
+                                        </Button>
+                                    </Stack>
+                                </Grid>
+                            </DialogActions>
+                        </Grid>
+                    </Grid>
+                </Dialog>
+            )}
+        </>
     )
 }
 

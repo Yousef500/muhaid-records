@@ -1,10 +1,18 @@
 import {Grid, TextField} from "@mui/material";
 
-const FirstStep = ({register}) => {
+const FirstStep = ({register, errors}) => {
     return (
         <Grid container spacing={1} mt={3}>
             <Grid item xs={12} md={6}>
-                <TextField fullWidth label={'اسم المشروع'} {...register('projectName')} />
+                <TextField
+                    fullWidth
+                    label={'اسم المشروع'}
+                    {...register('projectName', {
+                        required: 'اسم المشروع مطلوب'
+                    })}
+                    error={!!errors.projectName}
+                    helperText={errors.projectName?.message}
+                />
             </Grid>
             <Grid item xs={12} md={6}>
                 <TextField fullWidth label={'عنوان المشروع'} {...register('projectAddress')}/>
