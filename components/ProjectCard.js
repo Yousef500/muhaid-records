@@ -15,15 +15,17 @@ import {
 import {Delete, Edit, Save} from "@mui/icons-material";
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import {toast} from "react-toastify";
-import {useDispatch} from "react-redux";
-import {deleteProject} from "../src/app/slices/projectsSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {postDeleteProject} from "../src/app/slices/projectsSlice";
 import {useState} from "react";
 import {LoadingButton} from "@mui/lab";
+import muAxios from "../lib/axios-config";
 
 const ProjectCard = ({name, description, img, id}) => {
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const {pageNumber, pageSize} = useSelector(state => state.projects)
 
     const handleDownload = () => {
         try {
@@ -46,11 +48,21 @@ const ProjectCard = ({name, description, img, id}) => {
         setOpen(true);
     }
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         setLoading(true)
-        dispatch(deleteProject(name))
-        setLoading(false);
-        handleClose();
+        try {
+            const response = await muAxios.post('/delete-project', {name});
+            dispatch(postDeleteProject({pageNumber, pageSize}))
+            toast.success('تم حذف المشروع بنجاح')
+            handleClose();
+        } catch (e) {
+            console.log({e})
+            toast.error(e.response?.data.message ?? 'لقد حدث خطأ ما')
+            handleClose();
+            setLoading(false)
+        }
+        setLoading(false)
+
     }
     return (
         <>

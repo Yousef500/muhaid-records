@@ -14,6 +14,12 @@ import muAxios from "../lib/axios-config";
 import {LoadingButton} from '@mui/lab'
 import {toast} from "react-toastify";
 
+export async function getStaticProps() {
+    return {
+        props: {}
+    }
+}
+
 const AddProject = () => {
     const [activeStep, setActiveStep] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -48,7 +54,6 @@ const AddProject = () => {
         try {
             const images = await readImages(data.images);
             const res = await muAxios.post('/save-project', {...data, images: images});
-            dispatch(addProject({...data, images: images}));
             await router.push('/?currentPage=1&pageSize=5')
             toast.success('تم إضافة المشروع بنجاح')
         } catch (e) {

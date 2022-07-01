@@ -1,10 +1,11 @@
-import {configureStore} from "@reduxjs/toolkit";
+import {combineReducers, configureStore} from "@reduxjs/toolkit";
 import userReducer from './slices/userSlice';
 import projectsReducer from './slices/projectsSlice';
 
-// const reducers = combineReducers({
-//     user: userReducer
-// })
+const reducers = combineReducers({
+    user: userReducer,
+    projects: projectsReducer
+})
 
 // const persistConfig = {
 //     key: 'root',
@@ -14,11 +15,7 @@ import projectsReducer from './slices/projectsSlice';
 // const persistedReducer = persistReducer(persistConfig, reducers);
 
 const store = configureStore({
-    reducer: {
-        user: userReducer,
-        projects: projectsReducer
-    }
-    // middleware: [thunk]
+    reducer: reducers,
 });
 
 export default store;

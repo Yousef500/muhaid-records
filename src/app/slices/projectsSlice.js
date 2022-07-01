@@ -1,6 +1,13 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import muAxios from "../../../lib/axios-config";
-import {toast} from "react-toastify";
+
+const postDeleteProject = createAsyncThunk(
+    'fetchProjects',
+    async ({pageNumber, pageSize}, thunkApi) => {
+        const {data} = await muAxios.get(`/fetch-projects?currentPage=${pageNumber}&pageSize=${pageSize}`);
+        return data;
+    }
+)
 
 export const projectsSlice = createSlice({
     name: 'projects',
@@ -12,7 +19,10 @@ export const projectsSlice = createSlice({
     },
     reducers: {
         setProjects: (state, action) => {
-            state.projects = action.payload;
+            const {projects, count} = action.payload;
+            state.projects = projects
+            state.count = count;
+
         },
         setPagination: (state, action) => {
             state.count = action.payload.count ?? state.projects.length;
@@ -24,22 +34,19 @@ export const projectsSlice = createSlice({
             state.count++
         },
         deleteProject: async (state, action) => {
-            const projectName = action.payload;
-            try {
-                const response = await muAxios.post('/delete-project', {projectName});
-                // state.projects = state.projects.filter((proj, id) => id !== action.payload)
-                console.log(state.projects)
-                const {data} = await muAxios.get(`/fetch-projects?currentPage${state.pageNumber}&pageSize=${state.pageSize}`);
-                state.projects = data.projects;
-                console.log(state.projects)
-                toast.success('تم حذف المشروع بنجاح')
-            } catch (e) {
-                toast.error(e.response.data.message ?? 'لقد حدث خطأ ما')
-            }
+            state.projects = state.projects.filter(p => p.projectName !== action.payload);
+            state.count--
         }
+    },
+    extraReducers: (builder) => {
+        builder.addCase(postDeleteProject.fulfilled, (state, action) => {
+            state.projects = action.payload.projects
+            state.count = action.payload.count
+        })
     }
 });
 
 export const {setProjects, setPagination, addProject, deleteProject} = projectsSlice.actions;
+export {postDeleteProject};
 
 export default projectsSlice.reducer;

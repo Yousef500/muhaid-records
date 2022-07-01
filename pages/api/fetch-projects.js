@@ -7,10 +7,15 @@ const handler = async (req, res) => {
         try {
             const skipParams = (Number(currentPage) - 1) * Number(pageSize);
             const {db} = await connectToDatabase();
-            const cursor = await db.collection('Projects').find({}, {skip: skipParams, limit: Number(pageSize)});
+            const count = await db.collection('Projects').estimatedDocumentCount();
+            const cursor = await db.collection('Projects').find({}, {
+                sort: {createdAt: -1},
+                skip: skipParams,
+                limit: Number(pageSize)
+            });
             const projects = await cursor.toArray()
             console.log(projects)
-            return res.status(200).json({projects});
+            return res.status(200).json({projects, count});
         } catch (e) {
             console.log({e})
             return res.status(400).json({message: 'لقد حدث خطأ ما'})

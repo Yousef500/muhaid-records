@@ -2,14 +2,13 @@ import {connectToDatabase} from "../../lib/mongodb";
 import fs from "fs";
 
 const handler = async (req, res) => {
-    const {projectName} = req.body;
+    const {name} = req.body;
 
-    if (projectName) {
+    if (name) {
         try {
             const {db} = await connectToDatabase();
-            await fs.promises.rm(`./public/static/images/${projectName}`, {recursive: true, force: true})
-            const result = await db.collection('Projects').deleteOne({projectName: projectName});
-            console.log(result);
+            await fs.promises.rm(`./public/static/images/${name}`, {recursive: true, force: true})
+            await db.collection('Projects').deleteOne({projectName: name});
             return res.status(200).json();
         } catch (e) {
             console.log({e});
