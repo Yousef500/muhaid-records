@@ -2,9 +2,9 @@ import {Button, Grid, TextField} from "@mui/material";
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import styled from "@emotion/styled";
 
-const ThirdStep = ({register}) => {
+const ThirdStep = ({register, step}) => {
     return (
-        <Grid container spacing={2} mt={3}>
+        <Grid container spacing={2} mt={3} display={step !== 2 && 'none'}>
             <Grid item xs={12} md={6}>
                 <TextField fullWidth label={'مكتب المصمم المعتمد'} {...register('desOffice')}/>
             </Grid>

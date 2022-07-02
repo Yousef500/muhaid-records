@@ -19,6 +19,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {deleteProject} from "../src/app/slices/projectsSlice";
 import {useState} from "react";
 import {LoadingButton} from "@mui/lab";
+import Link from "next/link";
 
 const ProjectCard = ({name, description, img, id}) => {
     const dispatch = useDispatch();
@@ -76,45 +77,51 @@ const ProjectCard = ({name, description, img, id}) => {
                                 variant={'contained'}
                                 color={"primary"}
                                 onClick={handleDownload}>استخراج</Button>
-                        <Button sx={{mx: 1, borderRadius: '1rem'}} startIcon={<Edit/>} variant={'outlined'}
-                                color={"secondary"}>تعديل</Button>
+                        <Link href={`/projects/edit-project/${id}`}>
+                            <Button sx={{mx: 1, borderRadius: '1rem'}} startIcon={<Edit/>} variant={'outlined'}
+                                    color={"secondary"}>
+                                تعديل
+                            </Button>
+                        </Link>
                         <Button sx={{borderRadius: '1rem'}} startIcon={<Delete/>} color={"error"} onClick={handleOpen}
                                 label={'حذف'}>حذف</Button>
                     </Grid>
                 </CardActions>
             </Card>
-            {open && (
-                <Dialog open={open} onClose={handleClose}>
-                    <Grid container spacing={2} mb={2} padding={2}>
-                        <Grid item xs={12}>
-                            <DialogTitle>
-                                <Grid container alignItems={'center'} justifyContent={'center'}>
-                                    هل أنت متأكد من حذف {name}؟
-                                </Grid>
-                            </DialogTitle>
+            {
+                open && (
+                    <Dialog open={open} onClose={handleClose}>
+                        <Grid container spacing={2} mb={2} padding={2}>
+                            <Grid item xs={12}>
+                                <DialogTitle>
+                                    <Grid container alignItems={'center'} justifyContent={'center'}>
+                                        هل أنت متأكد من حذف {name}؟
+                                    </Grid>
+                                </DialogTitle>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <DialogActions sx={{width: '100%'}}>
+                                    <Grid container alignItems={'center'} justifyContent={'center'}>
+                                        <Stack width={'100%'} direction={'row'} justifyContent={'space-evenly'}
+                                               alignItems={'center'}
+                                               spacing={1}>
+                                            <LoadingButton loading={loading} sx={{borderRadius: '1rem'}} color={'error'}
+                                                           variant={'outlined'}
+                                                           fullWidth
+                                                           startIcon={<Delete/>} onClick={handleDelete}>نعم</LoadingButton>
+                                            <Button sx={{borderRadius: '1rem'}} color={'secondary'} fullWidth
+                                                    variant={'contained'} startIcon={<Save/>} onClick={handleClose}
+                                            >
+                                                لا
+                                            </Button>
+                                        </Stack>
+                                    </Grid>
+                                </DialogActions>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={12}>
-                            <DialogActions sx={{width: '100%'}}>
-                                <Grid container alignItems={'center'} justifyContent={'center'}>
-                                    <Stack width={'100%'} direction={'row'} justifyContent={'space-evenly'}
-                                           alignItems={'center'}
-                                           spacing={1}>
-                                        <LoadingButton loading={loading} sx={{borderRadius: '1rem'}} color={'error'}
-                                                       variant={'outlined'}
-                                                       fullWidth
-                                                       startIcon={<Delete/>} onClick={handleDelete}>نعم</LoadingButton>
-                                        <Button sx={{borderRadius: '1rem'}} color={'secondary'} fullWidth
-                                                variant={'contained'} startIcon={<Save/>} onClick={handleClose}
-                                        >
-                                            لا
-                                        </Button>
-                                    </Stack>
-                                </Grid>
-                            </DialogActions>
-                        </Grid>
-                    </Grid>
-                </Dialog>
-            )}
+                    </Dialog>
+                )
+            }
         </>
     )
 }

@@ -1,8 +1,8 @@
 import {Grid, TextField} from "@mui/material";
 
-const FirstStep = ({register, errors}) => {
+const FirstStep = ({register, errors, step}) => {
     return (
-        <Grid container spacing={1} mt={3}>
+        <Grid container spacing={1} mt={3} display={step !== 0 && 'none'}>
             <Grid item xs={12} md={6}>
                 <TextField
                     fullWidth

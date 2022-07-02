@@ -20,7 +20,6 @@ export const projectsSlice = createSlice({
     },
     reducers: {
         setProjects: (state, action) => {
-            console.log(action.payload)
             const {projects, count, pageNumber, perPage} = action.payload;
             state.projects = projects;
             state.count = count;
