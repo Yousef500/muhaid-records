@@ -14,7 +14,6 @@ const handler = async (req, res) => {
                 limit: Number(pageSize)
             });
             const projects = await cursor.toArray()
-            console.log(projects)
             return res.status(200).json({projects, count});
         } catch (e) {
             console.log({e})

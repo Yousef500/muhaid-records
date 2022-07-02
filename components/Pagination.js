@@ -18,9 +18,10 @@ const CustomPagination = () => {
             spacing={0}
             alignItems="center"
             justifyContent="center">
-            <Pagination sx={{fontWeight: 'extra-bold'}} count={Math.ceil(count / pageSize)}
+            <Pagination count={Math.ceil(count / pageSize)}
                         color={'secondary'}
                         size={'large'}
+                        page={pageNumber}
                         showFirstButton showLastButton onChange={handleChange}/>
         </Grid>
     )

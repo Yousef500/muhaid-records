@@ -23,11 +23,9 @@ export async function getServerSideProps(ctx) {
     }
 
     const {currentPage, pageSize} = ctx.query;
-    console.log(ctx.query)
 
     const pageNumber = Number(currentPage)
     const perPage = Number(pageSize)
-    console.log(pageNumber, perPage)
     const skipParams = await (pageNumber - 1) * perPage;
     const {db} = await connectToDatabase();
     const count = await db.collection('Projects').estimatedDocumentCount();
@@ -44,12 +42,12 @@ export async function getServerSideProps(ctx) {
 }
 
 
-export default function Home({projects, count}) {
+export default function Home({projects, count, pageNumber, perPage}) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(setProjects({projects, count}))
-    }, [count, dispatch, projects])
+        dispatch(setProjects({projects, count, pageNumber, perPage}))
+    })
 
     return (
         <>

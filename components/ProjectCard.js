@@ -16,10 +16,9 @@ import {Delete, Edit, Save} from "@mui/icons-material";
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import {toast} from "react-toastify";
 import {useDispatch, useSelector} from "react-redux";
-import {postDeleteProject} from "../src/app/slices/projectsSlice";
+import {deleteProject} from "../src/app/slices/projectsSlice";
 import {useState} from "react";
 import {LoadingButton} from "@mui/lab";
-import muAxios from "../lib/axios-config";
 
 const ProjectCard = ({name, description, img, id}) => {
     const dispatch = useDispatch();
@@ -51,14 +50,12 @@ const ProjectCard = ({name, description, img, id}) => {
     const handleDelete = async () => {
         setLoading(true)
         try {
-            const response = await muAxios.post('/delete-project', {name});
-            dispatch(postDeleteProject({pageNumber, pageSize}))
+            await dispatch(deleteProject({name, pageNumber, pageSize}))
             toast.success('تم حذف المشروع بنجاح')
             handleClose();
         } catch (e) {
             console.log({e})
-            toast.error(e.response?.data.message ?? 'لقد حدث خطأ ما')
-            handleClose();
+            toast.error(e.response?.data?.message ?? 'لقد حدث خطأ ما')
             setLoading(false)
         }
         setLoading(false)
