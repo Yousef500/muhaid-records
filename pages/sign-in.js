@@ -18,7 +18,7 @@ export async function getServerSideProps(ctx) {
     if (accessToken) {
         return {
             redirect: {
-                destination: '/1/5',
+                destination: '/?currentPage=1&pageSize=5',
                 permanent: false
             }
         }
@@ -44,7 +44,7 @@ const SignIn = () => {
         setLoading(true);
         try {
             const {data} = await muAxios.post('/login', credentials);
-            await router.push('/');
+            await router.push('/?currentPage=1&pageSize=5');
             dispatch(setLoggedIn(true));
             toast.success("تم تسجيل الدخول بنجاح!");
         } catch (e) {
