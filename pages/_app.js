@@ -12,7 +12,7 @@ import {Slide, ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import {Provider} from "react-redux";
 import store from "../src/app/store";
-import {CircularProgress} from "@mui/material";
+import {Backdrop, CircularProgress} from "@mui/material";
 
 // let persistor = persistStore(store);
 
@@ -40,13 +40,12 @@ export default function MyApp(props) {
                 <CssBaseline/>
                 <Provider store={store}>
                     {/*<PersistGate loading={null} persistor={persistor}>*/}
-                    {loading ? <CircularProgress
-                            sx={{
-                                width: '100vw',
-                                height: '100vh',
-                                marginLeft: {xs: '40%'},
-                                marginTop: {xs: '80%', sm: '40%', md: '20%', lg: '15%'}
-                            }} thickness={4} size={'20%'} color={'secondary'}/> :
+                    {loading ? <Backdrop
+                            sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                            open={true}
+                        >
+                            <CircularProgress color="primary"/>
+                        </Backdrop> :
                         <Component {...pageProps} />
                     }
                     {/*</PersistGate>*/}

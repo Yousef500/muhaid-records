@@ -29,7 +29,7 @@ const Navbar = () => {
 
     return (
         <Box display={'flex'} mb={12}>
-            <AppBar component={'nav'} position={'fixed'} sx={{width: '100%'}}>
+            <AppBar color={'default'} component={'nav'} position={'fixed'} sx={{width: '100%'}}>
                 <Toolbar sx={{width: '100%'}}>
                     <Typography
                         variant="h5"

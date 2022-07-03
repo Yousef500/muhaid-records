@@ -3,8 +3,8 @@ import muAxios from "../../../lib/axios-config";
 
 const deleteProject = createAsyncThunk(
     'deleteProject',
-    async ({name, pageNumber, pageSize}, thunkApi) => {
-        const response = await muAxios.post('/delete-project', {name});
+    async ({id, pageNumber, pageSize}, thunkApi) => {
+        const response = await muAxios.post('/delete-project', {id});
         const {data} = await muAxios.get(`/fetch-projects?currentPage=${pageNumber}&pageSize=${pageSize}`);
         return data;
     }

@@ -58,12 +58,11 @@ const AddProject = () => {
                 return new Promise(resolve => {
                     reader.readAsDataURL(image)
                     reader.onload = () => resolve(reader.result.toString())
-
                 })
             })
 
             const imgs = await Promise.all(files);
-            setImageList([...imageList, imgs[0]])
+            setImageList([...imageList, {src: imgs[0], name: images[0].name}]);
         } catch (e) {
             console.log({e})
             toast.error('لقد حدث خطأ ما')
@@ -131,7 +130,7 @@ const AddProject = () => {
                                     <Input accept={'image/*'} id={'contained-button-file'}
                                            type={'file'} multiple {...register('images')} onChange={readImages}/>
                                     <Button color={'primary'} variant={'contained'} component={'span'} fullWidth
-                                            endIcon={<PhotoCameraIcon/>}>رفع صور</Button>
+                                            endIcon={<PhotoCameraIcon/>}>رفع صورة</Button>
                                 </label>
                             </Grid>
 
@@ -144,11 +143,11 @@ const AddProject = () => {
                                 <Grid item xs={12}>
                                     <List>
                                         <Grid container spacing={1} alignItems={'center'} justifyContent={'center'}>
-                                            {imageList.map((src, index) => (
+                                            {imageList.map((image, index) => (
                                                 <Grid item xs={12} sm={6} md={4} key={index}>
                                                     <ListItem disablePadding>
                                                         <ListItemButton onClick={() => handleRemoveImage(index)}>
-                                                            <Image src={src} width={350} height={210} alt={'صورة'}/>
+                                                            <Image src={image.src} width={350} height={210} alt={'صورة'}/>
                                                         </ListItemButton>
                                                     </ListItem>
                                                 </Grid>

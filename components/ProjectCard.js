@@ -51,7 +51,7 @@ const ProjectCard = ({name, description, img, id}) => {
     const handleDelete = async () => {
         setLoading(true)
         try {
-            await dispatch(deleteProject({name, pageNumber, pageSize}))
+            await dispatch(deleteProject({id, pageNumber, pageSize}))
             toast.success('تم حذف المشروع بنجاح')
             handleClose();
         } catch (e) {
@@ -65,7 +65,7 @@ const ProjectCard = ({name, description, img, id}) => {
     return (
         <>
             <Card sx={{my: 2}} elevation={6}>
-                <CardMedia component={'img'} height={'290'} width={'100vw'} image={img ?? '/static/images/Best.jpg'}/>
+                <CardMedia component={'img'} height={'290'} width={'100vw'} image={img.src ?? '/static/images/Best.jpg'}/>
                 <Divider/>
                 <CardContent sx={{height: 180, overflowY: 'auto'}}>
                     <Typography gutterBottom variant={'h5'} component={'div'}>{name}</Typography>

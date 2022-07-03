@@ -28,6 +28,7 @@ import {Cancel, Save} from "@mui/icons-material";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import Image from "next/image";
 import {connectToDatabase} from "../../../lib/mongodb";
+import {DropzoneComponent} from "react-dropzone-component";
 
 export async function getStaticProps(ctx) {
     const {id} = ctx.params;
@@ -35,27 +36,13 @@ export async function getStaticProps(ctx) {
         const {db} = await connectToDatabase();
         const projection = {
             _id: 0,
-            images: 1,
-            projectName: 1,
-            projectAddress: 1,
-            municipality: 1,
-            municipal: 1,
-            district: 1,
-            ownerName: 1,
-            permitNumber: 1,
-            plotNumber: 1,
-            schemeNumber: 1,
-            conType: 1,
-            conDesc: 1,
-            floorCount: 1,
-            desOffice: 1,
-            superOffice: 1,
-            contractor: 1,
-            superEng: 1
+            createdAt: 0,
+            updatedAt: 0,
+            createdBy: 0,
+            updatedBy: 0
         }
         const cursor = await db.collection('Projects').find({_id: Number(id)}).project(projection);
         const project = (await cursor.toArray())[0];
-
         return {
             props: {
                 project: project ?? {},
@@ -100,6 +87,9 @@ const EditProject = ({project, id}) => {
         display: 'none',
     });
 
+    const componentConfig = {postUrl: 'no-url'};
+    const djsConfig = {autoProcessQueue: false}
+
     useEffect(() => {
         setImageList(project.images)
     }, [project.images])
@@ -121,17 +111,17 @@ const EditProject = ({project, id}) => {
             })
 
             const imgs = await Promise.all(files);
-            setImageList([...imageList, imgs[0]])
+            setImageList([...imageList, {src: imgs[0], name: images[0].name}])
         } catch (e) {
             console.log({e})
             toast.error('لقد حدث خطأ ما')
         }
     }
 
-    const handleCreateProject = async (data) => {
+    const handleUpdateProject = async (data) => {
         setLoading(true)
         try {
-            const res = await muAxios.post('/save-project', {...data, images: imageList});
+            const res = await muAxios.post('/update-project', {project: {...data, images: imageList}, id});
             await router.push('/?currentPage=1&pageSize=5')
             toast.success('تم إضافة المشروع بنجاح')
         } catch (e) {
@@ -170,7 +160,7 @@ const EditProject = ({project, id}) => {
                     </Grid>
                 </Grid>
                 <Grid item xs={12}>
-                    <Box component={'form'} onSubmit={handleSubmit(handleCreateProject)}>
+                    <Box component={'form'} onSubmit={handleSubmit(handleUpdateProject)}>
                         <Grid item xs={12} mt={1}>
                             <Stepper nonLinear activeStep={activeStep}>
                                 {stepperLabels.map((label, index) => (
@@ -198,10 +188,14 @@ const EditProject = ({project, id}) => {
                             <Grid item xs={5}>
                                 <label htmlFor={'contained-button-file'}>
                                     <Input accept={'image/*'} id={'contained-button-file'}
-                                           type={'file'} multiple {...register('images')} onChange={readImages}/>
+                                           type={'file'} multiple multipart {...register('images')}
+                                           onChange={readImages}/>
                                     <Button color={'primary'} variant={'contained'} component={'span'} fullWidth
-                                            endIcon={<PhotoCameraIcon/>}>رفع صور</Button>
+                                            endIcon={<PhotoCameraIcon/>}>رفع صورة</Button>
                                 </label>
+                                {/*<DropzoneComponent config={componentConfig}*/}
+                                {/*                   eventHandlers={readImages}*/}
+                                {/*                   djsConfig={djsConfig} />*/}
                             </Grid>
 
                             <Grid item xs={3.5}>
@@ -213,11 +207,12 @@ const EditProject = ({project, id}) => {
                                 <Grid item xs={12}>
                                     <List>
                                         <Grid container spacing={1} alignItems={'center'} justifyContent={'center'}>
-                                            {imageList.map((src, index) => (
+                                            {imageList.map((image, index) => (
                                                 <Grid item xs={12} sm={6} md={4} key={index}>
                                                     <ListItem disablePadding>
                                                         <ListItemButton onClick={() => handleRemoveImage(index)}>
-                                                            <Image src={src} width={350} height={210} alt={'صورة'}/>
+                                                            <Image src={image.src} width={450} height={300}
+                                                                   alt={'صورة'}/>
                                                         </ListItemButton>
                                                     </ListItem>
                                                 </Grid>
