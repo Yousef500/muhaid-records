@@ -4,6 +4,7 @@ import {useSelector} from "react-redux";
 
 const Projects = () => {
     const {pageSize, pageNumber, projects} = useSelector(state => state.projects);
+    console.log(projects);
 
     return (
         <Grid container spacing={{xs: 0, sm: 2}}>

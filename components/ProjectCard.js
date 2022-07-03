@@ -42,6 +42,7 @@ const ProjectCard = ({name, description, img, id}) => {
 
     const handleClose = () => {
         setOpen(false);
+        console.log(img.src)
     }
 
     const handleOpen = () => {

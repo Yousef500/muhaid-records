@@ -21,9 +21,12 @@ const handler = async (req, res) => {
                     let dbImages = [];
                     await project.images.map(async (imageString) => {
                         if (imageString.src.includes('static')) {
-                            dbImages.push(imageString.src);
+                            dbImages.push(imageString);
                         } else {
-                            dbImages.push(`${projectFolder}/${imageString.name}`);
+                            dbImages.push({
+                                src: `${projectFolder}/${imageString.name}`,
+                                name: imageString.name
+                            });
                             const image = Buffer.from(imageString.src.split('base64,')[1], 'base64');
                             await fs.promises.writeFile(`./public/${projectFolder}/${imageString.name}`, image);
                         }

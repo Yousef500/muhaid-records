@@ -188,7 +188,7 @@ const EditProject = ({project, id}) => {
                             <Grid item xs={5}>
                                 <label htmlFor={'contained-button-file'}>
                                     <Input accept={'image/*'} id={'contained-button-file'}
-                                           type={'file'} multiple multipart {...register('images')}
+                                           type={'file'} multiple {...register('images')}
                                            onChange={readImages}/>
                                     <Button color={'primary'} variant={'contained'} component={'span'} fullWidth
                                             endIcon={<PhotoCameraIcon/>}>رفع صورة</Button>
