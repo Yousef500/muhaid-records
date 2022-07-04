@@ -8,6 +8,7 @@ module.exports = {
     env: {
         EMAIL: 'mce@almuhaidgroup.com',
         PASS: 'PA$$w0rd'
-    }
+    },
+    swcMinify: true
 }
 

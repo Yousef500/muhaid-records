@@ -7,7 +7,14 @@ const handler = async (req, res) => {
     if (id) {
         try {
             const {db} = await connectToDatabase();
-            await fs.promises.rm(`./public/static/images/${id}`, {recursive: true, force: true})
+            // await fs.promises.rm(`./public/static/images/${id}`, {recursive: true, force: true})
+            const files = await fs.promises.readdir('./public')
+
+            await files.forEach(async (file) => {
+                if (file.includes(`${id}-`)) {
+                    await fs.promises.unlink(`./public/${file}`)
+                }
+            });
             await db.collection('Projects').deleteOne({_id: id});
             return res.status(200).json();
         } catch (e) {

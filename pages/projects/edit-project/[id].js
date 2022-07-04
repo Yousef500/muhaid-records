@@ -28,7 +28,6 @@ import {Cancel, Save} from "@mui/icons-material";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import Image from "next/image";
 import {connectToDatabase} from "../../../lib/mongodb";
-import {DropzoneComponent} from "react-dropzone-component";
 
 export async function getStaticProps(ctx) {
     const {id} = ctx.params;

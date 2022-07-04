@@ -18,15 +18,15 @@ const handler = async (req, res) => {
                 const sequenceValue = counter.value.sequence_value;
                 const project = await db.collection('Projects').findOne({projectName});
                 if (project?._id) return res.status(400).json({message: 'المشروع موجود بالفعل'});
-                await fs.promises.mkdir(`./public/static/images/${sequenceValue}`, {recursive: true})
+                // await fs.promises.mkdir(`./static/images/${sequenceValue}`, {recursive: true})
                 let dbImages = [];
                 await data.images.map(async (imageInfo) => {
+                    // const image = Buffer.from(imageInfo.src.split('base64,')[1], 'base64');
                     dbImages.push({
-                        src: `/static/images/${sequenceValue}/${imageInfo.name}`,
-                        name: imageInfo.name
+                        // src: `/static/images/${sequenceValue}/${imageInfo.name}`,
+                        ...imageInfo
                     })
-                    const image = Buffer.from(imageInfo.src.split('base64,')[1], 'base64');
-                    await fs.promises.writeFile(`./public/static/images/${sequenceValue}/${imageInfo.name}`, image);
+                    // await fs.promises.writeFile(`./static/images/${sequenceValue}/${imageInfo.name}`, image);
                 })
                 try {
                     const result = await db.collection('Projects').insertOne({
@@ -41,7 +41,14 @@ const handler = async (req, res) => {
                     return res.status(201).json({project: {...data, images: dbImages}});
                 } catch (e) {
                     console.log({e})
-                    await fs.promises.rm(`./public/static/images/${sequenceValue}`, {recursive: true, force: true});
+                    // const files = await fs.promises.readdir('./static')
+                    //
+                    // await files.forEach(async (file) => {
+                    //     if (file.includes(`${id}-`)) {
+                    //         await fs.promises.unlink(`./public/${file}`)
+                    //     }
+                    // });
+                    // await fs.promises.rm(`./static/images/${sequenceValue}`, {recursive: true, force: true});
                     return res.status(400).json({message: 'لقد حدث خطأ ما'});
                 }
             } catch (e) {

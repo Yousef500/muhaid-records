@@ -13,10 +13,10 @@ const handler = async (req, res) => {
                 const {id, project} = req.body;
                 console.log(req.body);
                 if (id && project) {
-                    const projectFolder = `/static/images/${id}`
+                    // const projectFolder = `/${id}`
                     const {db} = await connectToDatabase();
-                    const existingName = await db.collection('Projects').findOne({projectName: project.projectName});
-                    if (existingName?._id) return res.status(400).json({message: 'المشروع موجود بالفعل'});
+                    const existingProject = await db.collection('Projects').findOne({projectName: project.projectName.trim()});
+                    if (existingProject?._id && existingProject._id !== Number(id)) return res.status(400).json({message: 'المشروع موجود بالفعل'});
                     const date = Date.now();
                     let dbImages = [];
                     await project.images.map(async (imageString) => {
@@ -24,11 +24,11 @@ const handler = async (req, res) => {
                             dbImages.push(imageString);
                         } else {
                             dbImages.push({
-                                src: `${projectFolder}/${imageString.name}`,
+                                src: `/${id}-${imageString.name}`,
                                 name: imageString.name
                             });
                             const image = Buffer.from(imageString.src.split('base64,')[1], 'base64');
-                            await fs.promises.writeFile(`./public/${projectFolder}/${imageString.name}`, image);
+                            await fs.promises.writeFile(`./public/${id}-${imageString.name}`, image);
                         }
                     })
                     const query = {_id: Number(id)};
@@ -58,6 +58,7 @@ const handler = async (req, res) => {
                     }
                     const dbRes = await db.collection('Projects').updateOne(query, updatedDocument);
                     if (dbRes.modifiedCount > 0) {
+                        await res.unstable_revalidate(`/projects/edit-project/${id}`);
                         return res.status(200).json()
                     } else {
                         console.log(dbRes)
