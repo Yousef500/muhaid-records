@@ -25,6 +25,7 @@ import muAxios from "../lib/axios-config";
 import {LoadingButton} from '@mui/lab'
 import {toast} from "react-toastify";
 import Image from 'next/image'
+import Compress from 'compress.js'
 
 export async function getStaticProps() {
     return {
@@ -35,7 +36,7 @@ export async function getStaticProps() {
 const AddProject = () => {
     const [activeStep, setActiveStep] = useState(0);
     const [loading, setLoading] = useState(false);
-    const [imageList, setImageList] = useState([]);
+    const [compressedImages, setCompressedImages] = useState([]);
     const {register, handleSubmit, formState: {errors}} = useForm();
     const dispatch = useDispatch();
     const router = useRouter();
@@ -52,17 +53,27 @@ const AddProject = () => {
 
     const readImages = async (e) => {
         try {
-            const images = e.target.files;
-            const files = [...images].map(image => {
-                const reader = new FileReader();
-                return new Promise(resolve => {
-                    reader.readAsDataURL(image)
-                    reader.onload = () => resolve(reader.result.toString())
-                })
+            const image = e.target.files;
+            const compress = new Compress();
+            const data = await compress.compress([...image], {
+                size: 4,
+                quality: 0.75,
+                type: image[0].type,
+                resize: true,
             })
-
-            const imgs = await Promise.all(files);
-            setImageList([...imageList, {src: imgs[0], name: images[0].name}]);
+            const src = data[0].prefix + data[0].data;
+            const name = data[0].alt;
+            await setCompressedImages([...compressedImages, {src: src, name: name}])
+            // const files = [...images].map(image => {
+            //     const reader = new FileReader();
+            //     return new Promise(resolve => {
+            //         reader.readAsDataURL(image)
+            //         reader.onload = () => resolve(reader.result.toString())
+            //     })
+            // })
+            //
+            // const imgs = await Promise.all(files);
+            // setCompressedImages([...compressedImages, {src: imgs[0], name: images[0].name}]);
         } catch (e) {
             console.log({e})
             toast.error('لقد حدث خطأ ما')
@@ -72,7 +83,7 @@ const AddProject = () => {
     const handleCreateProject = async (data) => {
         setLoading(true)
         try {
-            const res = await muAxios.post('/save-project', {...data, images: imageList});
+            const res = await muAxios.post('/save-project', {newProject: {...data, images: compressedImages}});
             await router.push('/?currentPage=1&pageSize=5')
             toast.success('تم إضافة المشروع بنجاح')
         } catch (e) {
@@ -82,7 +93,7 @@ const AddProject = () => {
     }
 
     const handleRemoveImage = (index) => {
-        setImageList(imageList.filter((src, id) => id !== index));
+        setCompressedImages(compressedImages.filter((src, id) => id !== index));
     }
 
     const handleCancel = async () => {
@@ -139,15 +150,16 @@ const AddProject = () => {
                                         color={'error'}>إلغاء</Button>
                             </Grid>
 
-                            {imageList.length > 0 && (
+                            {compressedImages.length > 0 && (
                                 <Grid item xs={12}>
                                     <List>
                                         <Grid container spacing={1} alignItems={'center'} justifyContent={'center'}>
-                                            {imageList.map((image, index) => (
+                                            {compressedImages.map((image, index) => (
                                                 <Grid item xs={12} sm={6} md={4} key={index}>
                                                     <ListItem disablePadding>
                                                         <ListItemButton onClick={() => handleRemoveImage(index)}>
-                                                            <Image src={image.src} width={350} height={210} alt={'صورة'}/>
+                                                            <Image src={image.src} width={350} height={210}
+                                                                   alt={'صورة'}/>
                                                         </ListItemButton>
                                                     </ListItem>
                                                 </Grid>

@@ -9,10 +9,11 @@ const handler = async (req, res) => {
             const {db} = await connectToDatabase();
             const count = await db.collection('Projects').estimatedDocumentCount();
             const cursor = await db.collection('Projects').find({}, {
-                sort: {createdAt: -1},
+                // sort: {createdAt: -1},
                 skip: skipParams,
-                limit: Number(pageSize)
-            });
+                limit: Number(pageSize),
+                "hint": "home_page"
+            }).project({createdAt: 1, projectName: 1, projectAddress: 1, "mainImage.src": 1});
             const projects = await cursor.toArray()
             return res.status(200).json({projects, count});
         } catch (e) {
@@ -25,3 +26,9 @@ const handler = async (req, res) => {
 }
 
 export default handler;
+
+export const config = {
+    api: {
+        responseLimit: false,
+    },
+}

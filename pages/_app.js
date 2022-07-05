@@ -41,10 +41,10 @@ export default function MyApp(props) {
                 <Provider store={store}>
                     {/*<PersistGate loading={null} persistor={persistor}>*/}
                     {loading ? <Backdrop
-                            sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                            sx={{bgcolor: 'white', zIndex: (theme) => theme.zIndex.drawer + 1}}
                             open={true}
                         >
-                            <CircularProgress color="primary"/>
+                            <CircularProgress color="secondary" size={200}/>
                         </Backdrop> :
                         <Component {...pageProps} />
                     }

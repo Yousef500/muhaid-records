@@ -11,26 +11,25 @@ const handler = async (req, res) => {
 
             if (verifiedUser.email) {
                 const {id, project} = req.body;
-                console.log(req.body);
                 if (id && project) {
                     // const projectFolder = `/${id}`
                     const {db} = await connectToDatabase();
                     const existingProject = await db.collection('Projects').findOne({projectName: project.projectName.trim()});
                     if (existingProject?._id && existingProject._id !== Number(id)) return res.status(400).json({message: 'المشروع موجود بالفعل'});
                     const date = Date.now();
-                    let dbImages = [];
-                    await project.images.map(async (imageString) => {
-                        if (imageString.src.includes('static')) {
-                            dbImages.push(imageString);
-                        } else {
-                            dbImages.push({
-                                src: `/${id}-${imageString.name}`,
-                                name: imageString.name
-                            });
-                            const image = Buffer.from(imageString.src.split('base64,')[1], 'base64');
-                            await fs.promises.writeFile(`./public/${id}-${imageString.name}`, image);
-                        }
-                    })
+                    // let dbImages = [];
+                    // await project.images.map(async (imageString) => {
+                    //     if (imageString.src.includes('static')) {
+                    //         dbImages.push(imageString);
+                    //     } else {
+                    //         dbImages.push({
+                    //             src: `/${id}-${imageString.name}`,
+                    //             name: imageString.name
+                    //         });
+                    //         const image = Buffer.from(imageString.src.split('base64,')[1], 'base64');
+                    //         await fs.promises.writeFile(`./public/${id}-${imageString.name}`, image);
+                    //     }
+                    // })
                     const query = {_id: Number(id)};
                     const updatedDocument = {
                         $set: {
@@ -51,14 +50,13 @@ const handler = async (req, res) => {
                             // contractor: project.contractor,
                             // superEng: project.superEng,
                             ...project,
-                            images: dbImages,
                             updatedAt: date,
                             updatedBy: verifiedUser.email
                         }
                     }
                     const dbRes = await db.collection('Projects').updateOne(query, updatedDocument);
                     if (dbRes.modifiedCount > 0) {
-                        await res.unstable_revalidate(`/projects/edit-project/${id}`);
+                        await res.revalidate(`/projects/edit-project/${id}`);
                         return res.status(200).json()
                     } else {
                         console.log(dbRes)
@@ -68,6 +66,7 @@ const handler = async (req, res) => {
             }
         } catch (e) {
             console.log({e})
+            return res.status(400).json({message: 'لقد حدث خطأ ما'})
         }
     } else {
         return res.status(403).json({message: 'رجاء تسجيل الدخول أولا'})

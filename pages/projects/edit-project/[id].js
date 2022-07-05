@@ -28,6 +28,7 @@ import {Cancel, Save} from "@mui/icons-material";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import Image from "next/image";
 import {connectToDatabase} from "../../../lib/mongodb";
+import Compress from 'compress.js'
 
 export async function getStaticProps(ctx) {
     const {id} = ctx.params;
@@ -40,7 +41,7 @@ export async function getStaticProps(ctx) {
             createdBy: 0,
             updatedBy: 0
         }
-        const cursor = await db.collection('Projects').find({_id: Number(id)}).project(projection);
+        const cursor = await db.collection('Projects').find({_id: Number(id)}, {"hint": "all_fields"}).project(projection);
         const project = (await cursor.toArray())[0];
         return {
             props: {
@@ -73,7 +74,7 @@ export async function getStaticPaths() {
 const EditProject = ({project, id}) => {
     const [activeStep, setActiveStep] = useState(0);
     const [loading, setLoading] = useState(false);
-    const [imageList, setImageList] = useState([]);
+    const [compressedImages, setCompressedImages] = useState([]);
     const {register, handleSubmit, formState: {errors}} = useForm({
         defaultValues: project
     });
@@ -90,7 +91,7 @@ const EditProject = ({project, id}) => {
     const djsConfig = {autoProcessQueue: false}
 
     useEffect(() => {
-        setImageList(project.images)
+        setCompressedImages(project.images)
     }, [project.images])
 
     const handleStep = (step) => () => {
@@ -100,17 +101,27 @@ const EditProject = ({project, id}) => {
     const readImages = async (e) => {
         try {
             const images = e.target.files;
-            const files = [...images].map(image => {
-                const reader = new FileReader();
-                return new Promise(resolve => {
-                    reader.readAsDataURL(image)
-                    reader.onload = () => resolve(reader.result.toString())
+            const compress = new Compress();
+            const data = await compress.compress([...images], {
+                size: 4,
+                quality: 0.75,
+                type: images[0].type,
+                resize: true
+            });
 
-                })
-            })
-
-            const imgs = await Promise.all(files);
-            setImageList([...imageList, {src: imgs[0], name: images[0].name}])
+            const src = data[0].prefix + data[0].data;
+            const name = data[0].alt;
+            // const files = [...images].map(image => {
+            //     const reader = new FileReader();
+            //     return new Promise(resolve => {
+            //         reader.readAsDataURL(image)
+            //         reader.onload = () => resolve(reader.result.toString())
+            //
+            //     })
+            // })
+            //
+            // const imgs = await Promise.all(files);
+            setCompressedImages([...compressedImages, {src: src, name: name}])
         } catch (e) {
             console.log({e})
             toast.error('لقد حدث خطأ ما')
@@ -120,7 +131,7 @@ const EditProject = ({project, id}) => {
     const handleUpdateProject = async (data) => {
         setLoading(true)
         try {
-            const res = await muAxios.post('/update-project', {project: {...data, images: imageList}, id});
+            const res = await muAxios.post('/update-project', {project: {...data, images: compressedImages}, id});
             await router.push('/?currentPage=1&pageSize=5')
             toast.success('تم إضافة المشروع بنجاح')
         } catch (e) {
@@ -130,7 +141,7 @@ const EditProject = ({project, id}) => {
     }
 
     const handleRemoveImage = (index) => {
-        setImageList(imageList.filter((src, id) => id !== index));
+        setCompressedImages(compressedImages.filter((src, id) => id !== index));
     }
 
     const handleCancel = async () => {
@@ -202,11 +213,11 @@ const EditProject = ({project, id}) => {
                                         color={'error'}>إلغاء</Button>
                             </Grid>
 
-                            {imageList.length > 0 && (
+                            {compressedImages.length > 0 && (
                                 <Grid item xs={12}>
                                     <List>
                                         <Grid container spacing={1} alignItems={'center'} justifyContent={'center'}>
-                                            {imageList.map((image, index) => (
+                                            {compressedImages.map((image, index) => (
                                                 <Grid item xs={12} sm={6} md={4} key={index}>
                                                     <ListItem disablePadding>
                                                         <ListItemButton onClick={() => handleRemoveImage(index)}>

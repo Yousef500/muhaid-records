@@ -27,7 +27,6 @@ const ProjectCard = ({name, description, img, id}) => {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const {pageNumber, pageSize} = useSelector(state => state.projects)
-    console.log(img)
 
     const handleDownload = () => {
         try {
@@ -44,7 +43,6 @@ const ProjectCard = ({name, description, img, id}) => {
 
     const handleClose = () => {
         setOpen(false);
-        console.log(img.src)
     }
 
     const handleOpen = () => {
@@ -68,7 +66,7 @@ const ProjectCard = ({name, description, img, id}) => {
     return (
         <>
             <Card sx={{my: 2}} elevation={6}>
-                <Image src={img.src ?? '/static/images/Best.jpg'} height={320} width={500} alt={'project-image'}/>
+                <CardMedia component={'img'} src={img.src ?? '/static/images/Best.jpg'} height={320} width={500} alt={'project-image'}/>
                 <Divider/>
                 <CardContent sx={{height: 180, overflowY: 'auto'}}>
                     <Typography gutterBottom variant={'h5'} component={'div'}>{name}</Typography>

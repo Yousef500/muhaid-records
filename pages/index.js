@@ -27,9 +27,15 @@ export async function getServerSideProps(ctx) {
     const pageNumber = Number(currentPage)
     const perPage = Number(pageSize)
     const skipParams = await (pageNumber - 1) * perPage;
+    const projection = {projectName: 1, projectAddress: 1, "mainImage.src": 1}
     const {db} = await connectToDatabase();
     const count = await db.collection('Projects').estimatedDocumentCount();
-    const cursor = await db.collection('Projects').find({}, {sort: {createdAt: -1}, skip: skipParams, limit: perPage});
+    const cursor = await db.collection('Projects').find({}, {
+        // sort: {createdAt: -1},
+        skip: skipParams,
+        limit: perPage,
+        "hint": "home_page"
+    }).project(projection);
     const projects = await cursor.toArray()
     return {
         props: {
