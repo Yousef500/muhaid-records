@@ -1,0 +1,10 @@
+{
+    "editor.fontSize": 18,
+    "editor.suggestFontSize": 18,
+    "debug.console.fontSize": 16,
+    "scm.inputFontSize": 16,
+    "terminal.integrated.fontSize": 18,
+    "markdown.preview.fontSize": 18,
+    "notebook.markup.fontSize": 18,
+    "notebook.outputFontSize": 18
+}
