@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
-import {useDispatch} from "react-redux";
 import {useRouter} from "next/router";
 import styled from "@emotion/styled";
 import {toast} from "react-toastify";
@@ -29,30 +28,32 @@ import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import Image from "next/image";
 import {connectToDatabase} from "../../../lib/mongodb";
 import Compress from 'compress.js'
+import fs from "fs";
 
 export async function getStaticProps(ctx) {
     const {id} = ctx.params;
-    if (id) {
-        const {db} = await connectToDatabase();
-        const projection = {
-            _id: 0,
-            createdAt: 0,
-            updatedAt: 0,
-            createdBy: 0,
-            updatedBy: 0
-        }
-        const cursor = await db.collection('Projects').find({_id: Number(id)}, {"hint": "all_fields"}).project(projection);
-        const project = (await cursor.toArray())[0];
-        return {
-            props: {
-                project: project ?? {},
-                id
-            }
-        }
+    const {db} = await connectToDatabase();
+    const projection = {
+        _id: 0,
+        createdAt: 0,
+        updatedAt: 0,
+        createdBy: 0,
+        updatedBy: 0
+    }
+    const cursor = await db.collection('Projects').find({_id: Number(id)}).project(projection);
+    const project = (await cursor.toArray())[0];
+    const images = [];
+    for (let imageObject of project.images) {
+        const image = await fs.promises.readFile(`${imageObject.src}`, "base64");
+        images.push({
+            ...imageObject,
+            src: `data:${imageObject.type};base64,${image}`
+        })
     }
     return {
         props: {
-            project: {}
+            project: {...project, images: images} ?? {},
+            id
         }
     }
 }
@@ -61,9 +62,13 @@ export async function getStaticPaths() {
     const {db} = await connectToDatabase();
     const cursor = await db.collection('Projects').find({}).project({_id: 1});
     const projects = await cursor.toArray();
-    const paths = projects.map(proj => ({
-        params: {id: proj._id.toString()}
-    }));
+    const paths = [];
+
+    for (let proj of projects) {
+        paths.push({
+            params: {id: proj._id.toString()}
+        })
+    }
 
     return {
         paths,
@@ -78,7 +83,6 @@ const EditProject = ({project, id}) => {
     const {register, handleSubmit, formState: {errors}} = useForm({
         defaultValues: project
     });
-    const dispatch = useDispatch();
     const router = useRouter();
 
     const stepperLabels = ['البيانات الأساسية', 'بيانات المبنى', 'بيانات المكتب']
@@ -86,9 +90,6 @@ const EditProject = ({project, id}) => {
     const Input = styled('input')({
         display: 'none',
     });
-
-    const componentConfig = {postUrl: 'no-url'};
-    const djsConfig = {autoProcessQueue: false}
 
     useEffect(() => {
         setCompressedImages(project.images)
@@ -154,7 +155,7 @@ const EditProject = ({project, id}) => {
                 sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
                 open={true}
             >
-                <CircularProgress color="primary"/>
+                <CircularProgress color="primary" size={200}/>
             </Backdrop>
         )
     }
@@ -218,11 +219,11 @@ const EditProject = ({project, id}) => {
                                     <List>
                                         <Grid container spacing={1} alignItems={'center'} justifyContent={'center'}>
                                             {compressedImages.map((image, index) => (
-                                                <Grid item xs={12} sm={6} md={4} key={index}>
+                                                <Grid item xs={12} sm={6} md={4} key={image.name}>
                                                     <ListItem disablePadding>
                                                         <ListItemButton onClick={() => handleRemoveImage(index)}>
                                                             <Image src={image.src} width={450} height={300}
-                                                                   alt={'صورة'}/>
+                                                                   alt={image.name}/>
                                                         </ListItemButton>
                                                     </ListItem>
                                                 </Grid>

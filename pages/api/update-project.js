@@ -16,40 +16,24 @@ const handler = async (req, res) => {
                     const {db} = await connectToDatabase();
                     const existingProject = await db.collection('Projects').findOne({projectName: project.projectName.trim()});
                     if (existingProject?._id && existingProject._id !== Number(id)) return res.status(400).json({message: 'المشروع موجود بالفعل'});
+                    const basePath = `./static/images/${id}`;
                     const date = Date.now();
-                    // let dbImages = [];
-                    // await project.images.map(async (imageString) => {
-                    //     if (imageString.src.includes('static')) {
-                    //         dbImages.push(imageString);
-                    //     } else {
-                    //         dbImages.push({
-                    //             src: `/${id}-${imageString.name}`,
-                    //             name: imageString.name
-                    //         });
-                    //         const image = Buffer.from(imageString.src.split('base64,')[1], 'base64');
-                    //         await fs.promises.writeFile(`./public/${id}-${imageString.name}`, image);
-                    //     }
-                    // })
+                    const dbImages = [];
+                    for (let imageObject of project.images) {
+                        const base64Image = imageObject.src;
+                        const imageBuffer = Buffer.from(base64Image.split("base64,")[1], "base64");
+                        await fs.promises.writeFile(`${basePath}/${imageObject.name}`, imageBuffer);
+                        dbImages.push({
+                            src: `${basePath}/${imageObject.name}`,
+                            name: imageObject.name,
+                            type: imageObject.type,
+                        });
+                    }
                     const query = {_id: Number(id)};
                     const updatedDocument = {
                         $set: {
-                            // projectName: project.projectName,
-                            // projectAddress: project.projectAddress,
-                            // municipality: project.municipality,
-                            // municipal: project.municipal,
-                            // district: project.district,
-                            // ownerName: project.ownerName,
-                            // permitNumber: project.permitNumber,
-                            // plotNumber: project.plotNumber,
-                            // schemeNumber: project.schemeNumber,
-                            // conType: project.conType,
-                            // conDesc: project.conDesc,
-                            // floorCount: project.floorCount,
-                            // desOffice: project.desOffice,
-                            // superOffice: project.superOffice,
-                            // contractor: project.contractor,
-                            // superEng: project.superEng,
                             ...project,
+                            images: dbImages,
                             updatedAt: date,
                             updatedBy: verifiedUser.email
                         }

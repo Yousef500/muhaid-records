@@ -1,16 +1,16 @@
-import { AddCircleOutline } from "@mui/icons-material";
-import { Button, Container, Grid } from "@mui/material";
+import {AddCircleOutline} from "@mui/icons-material";
+import {Button, Container, Grid} from "@mui/material";
 import fs from "fs";
 import Head from "next/head";
 import Link from "next/link";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import {useEffect} from "react";
+import {useDispatch} from "react-redux";
 import Navbar from "../components/Navbar";
 import CustomPagination from "../components/Pagination";
 import Projects from "../components/Projects";
 import SearchComponent from "../components/Search";
-import { connectToDatabase } from "../lib/mongodb";
-import { setProjects } from "../src/app/slices/projectsSlice";
+import {connectToDatabase} from "../lib/mongodb";
+import {setProjects} from "../src/app/slices/projectsSlice";
 
 export async function getServerSideProps(ctx) {
     const accessToken = ctx.req.cookies.access_token;
@@ -24,7 +24,7 @@ export async function getServerSideProps(ctx) {
     }
 
     try {
-        const { currentPage, pageSize } = ctx.query;
+        const {currentPage, pageSize} = ctx.query;
 
         const pageNumber = Number(currentPage);
         const perPage = Number(pageSize);
@@ -34,7 +34,7 @@ export async function getServerSideProps(ctx) {
             projectAddress: 1,
             mainImage: 1,
         };
-        const { db } = await connectToDatabase();
+        const {db} = await connectToDatabase();
         const count = await db.collection("Projects").estimatedDocumentCount();
         const cursor = await db
             .collection("Projects")
@@ -44,24 +44,33 @@ export async function getServerSideProps(ctx) {
                     // sort: {createdAt: -1},
                     skip: skipParams,
                     limit: perPage,
-                    // hint: "home_page",
+                    hint: "home_page",
                 }
             )
             .project(projection);
         const initialProjects = await cursor.toArray();
-        console.log("initialProjects", initialProjects);
-        const projects = await initialProjects.map(async (proj) => {
+        const projects = [];
+        for (let proj of initialProjects) {
             const image = await fs.promises.readFile(proj.mainImage.src, "base64");
-            return {
+            projects.push({
                 ...proj,
                 mainImage: {
                     ...proj.mainImage,
-                    src: `data:${proj.mainImage.type};base64,${image}`,
-                },
-            };
-        });
+                    src: `data:${proj.mainImage.type};base64,${image}`
+                }
+            })
+        }
+        // const projects = initialProjects.map(async (proj) => {
+        //     const image = await fs.promises.readFile(proj.mainImage.src, "base64");
+        //     return {
+        //         ...proj,
+        //         mainImage: {
+        //             ...proj.mainImage,
+        //             src: `data:${proj.mainImage.type};base64,${image}`,
+        //         },
+        //     };
+        // });
 
-        console.log("projects", projects);
         return {
             props: {
                 projects,
@@ -71,7 +80,7 @@ export async function getServerSideProps(ctx) {
             },
         };
     } catch (e) {
-        console.error({ e });
+        console.error({e});
         return {
             props: {
                 projects: [],
@@ -80,20 +89,20 @@ export async function getServerSideProps(ctx) {
     }
 }
 
-export default function Home({ projects, count, pageNumber, perPage }) {
+export default function Home({projects, count, pageNumber, perPage}) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(setProjects({ projects, count, pageNumber, perPage }));
+        dispatch(setProjects({projects, count, pageNumber, perPage}));
     });
 
     return (
         <>
-            <Navbar />
+            <Navbar/>
             <Head>
                 <title>سجلَات المُحايد</title>
-                <meta name="description" content="Al Muhaid Redocrds" />
-                <link rel="icon" href="/mceicon.png" />
+                <meta name="description" content="Al Muhaid Redocrds"/>
+                <link rel="icon" href="/mceicon.png"/>
             </Head>
 
             <Container maxWidth={"fluid"}>
@@ -101,34 +110,34 @@ export default function Home({ projects, count, pageNumber, perPage }) {
                     container
                     alignItems="center"
                     justifyContent="center"
-                    spacing={{ xs: 1, sm: 2 }}
+                    spacing={{xs: 1, sm: 2}}
                     m={"auto"}
                 >
                     <Grid item xs={12}>
-                        <SearchComponent />
+                        <SearchComponent/>
                     </Grid>
 
-                    <Grid item xs={4} />
+                    <Grid item xs={4}/>
                     <Grid item xs={4}>
                         <Link href={"/add-project"}>
                             <Button
                                 fullWidth
                                 variant={"contained"}
                                 size={"large"}
-                                startIcon={<AddCircleOutline />}
+                                startIcon={<AddCircleOutline/>}
                             >
                                 إضافة مشروع
                             </Button>
                         </Link>
                     </Grid>
-                    <Grid item xs={4} />
+                    <Grid item xs={4}/>
 
                     <Grid item xs={12}>
-                        <Projects />
+                        <Projects/>
                     </Grid>
 
                     <Grid item xs={12} my={4}>
-                        <CustomPagination />
+                        <CustomPagination/>
                     </Grid>
                 </Grid>
             </Container>
