@@ -5,7 +5,7 @@ const handler = async (req, res) => {
     try {
         const result = await db.collection('Projects').createIndex({
             createdAt: -1,
-            "mainImage.src": 'text',
+            "mainImage.**": "text",
             projectName: "text",
             projectAddress: "text",
         }, {

@@ -105,7 +105,7 @@ export default function Home({projects, count, pageNumber, perPage}) {
                 <link rel="icon" href="/mceicon.png"/>
             </Head>
 
-            <Container maxWidth={false} sx={{mb: 5, mt: 7, pl: 3}}>
+            <Container maxWidth={false} sx={{mb: 5, mt: 7, pl: {xs: 3, sm: 3, md: 3}}}>
                 <Grid
                     component={Paper}
                     py={5}

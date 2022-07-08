@@ -4,27 +4,32 @@ const handler = async (req, res) => {
     const {db} = await connectToDatabase();
     try {
         const result = await db.collection('Projects').createIndex({
-            projectName: 1,
-            projectAddress: 1,
-            municipality: 1,
-            municipal: 1,
-            district: 1,
-            ownerName: 1,
-            permitNumber: 1,
-            plotNumber: 1,
-            schemeNumber: 1,
-            conType: 1,
-            conDesc: 1,
-            floorCount: 1,
-            desOffice: 1,
-            superOffice: 1,
-            contractor: 1,
-            superEng: 1,
-            createdAt: 1,
-            updatedAt: 1,
-            createdBy: 1,
-            updatedBy: 1
+            // projectName: 1,
+            // projectAddress: 1,
+            // municipality: 1,
+            // municipal: 1,
+            // district: 1,
+            // ownerName: 1,
+            // permitNumber: 1,
+            // plotNumber: 1,
+            // schemeNumber: 1,
+            // conType: 1,
+            // conDesc: 1,
+            // floorCount: 1,
+            // desOffice: 1,
+            // superOffice: 1,
+            // contractor: 1,
+            // superEng: 1,
+            // createdAt: 1,
+            // updatedAt: 1,
+            // createdBy: 1,
+            // updatedBy: 1
+            "$**": 1,
         }, {
+            "wildcardProjection": {
+                _id: 1,
+                mainImage: 0
+            },
             name: 'all_fields'
         });
         return res.status(201).json({result})

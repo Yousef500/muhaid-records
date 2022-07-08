@@ -108,7 +108,7 @@ const AddProject = () => {
 
     return (
         <Container maxWidth={false} sx={{pl: 3}}>
-            <Grid container component={Paper} elevation={6} spacing={1} padding={{xs: 3, sm: 5, md: 15}} mt={10}
+            <Grid container component={Paper} elevation={6} spacing={1} padding={{xs: 3, sm: 5, md: 15}} my={{xs: 1, sm: 10}}
                   sx={{borderRadius: 10}}>
                 <Grid item xs={12}>
                     <Grid
