@@ -66,7 +66,7 @@ const ProjectCard = ({name, description, img, id}) => {
         <>
             <Card sx={{my: 2}} elevation={6}>
                 <Link href={`/projects/${id}`}>
-                    <CardMedia component={'img'} src={img.src ?? '/static/images/Best.jpg'} height={320} width={500}
+                    <CardMedia sx={{"&:hover": {cursor: 'pointer'}}} component={'img'} src={img.src ?? '/static/images/Best.jpg'} height={320} width={500}
                                alt={'project-image'}/>
                 </Link>
                 <Divider/>
