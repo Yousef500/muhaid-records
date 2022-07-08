@@ -1,4 +1,4 @@
-import {Box, TextField} from "@mui/material";
+import {Grid, TextField} from "@mui/material";
 import {useForm} from "react-hook-form";
 
 const SearchComponent = () => {
@@ -9,16 +9,25 @@ const SearchComponent = () => {
     }
 
     return (
-        <Box component={'form'} onSubmit={handleSubmit(handleSearch)}>
-            <TextField
-                {
-                    ...register("searchTerm")
-                }
-                fullWidth={true}
-                label={'ابحث'}
-                variant={'outlined'}
-            />
-        </Box>
+        <Grid container component={'form'} onSubmit={handleSubmit(handleSearch)}>
+            <Grid item xs={3}/>
+            <Grid item xs={6}>
+                <TextField
+                    {
+                        ...register("searchTerm")
+                    }
+                    fullWidth={true}
+                    label={'ابحث'}
+                    variant={'outlined'}
+                    InputProps={{
+                        style: {
+                            borderRadius: 30,
+                        }
+                    }}
+                />
+            </Grid>
+            <Grid item xs={3}/>
+        </Grid>
     );
 }
 

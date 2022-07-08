@@ -28,7 +28,7 @@ const Navbar = () => {
 
 
     return (
-        <Box display={'flex'} mb={12}>
+        <Box display={'flex'}>
             <AppBar color={'default'} component={'nav'} position={'fixed'} sx={{width: '100%'}}>
                 <Toolbar sx={{width: '100%'}}>
                     <Typography

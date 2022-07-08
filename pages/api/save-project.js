@@ -20,7 +20,7 @@ const handler = async (req, res) => {
                 if (project?._id) return res.status(400).json({message: "المشروع موجود بالفعل"});
                 const counter = await db.collection("Counters").findOneAndUpdate({_id: "projectId"}, {$inc: {sequence_value: 1}});
                 const sequenceValue = counter.value.sequence_value;
-                const basePath = `./static/images/${sequenceValue}`;
+                const basePath = `./public/static/images/${sequenceValue}`;
                 await fs.promises.mkdir(`${basePath}`, {recursive: true});
 
                 const dbImages = [];

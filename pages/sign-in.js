@@ -57,6 +57,7 @@ const SignIn = () => {
         <>
             <Grid container component="main" sx={{height: '100vh'}}>
                 <Grid
+                    className={'loginBackground'}
                     item
                     xs={false}
                     sm={6}

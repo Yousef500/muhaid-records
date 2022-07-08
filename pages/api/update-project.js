@@ -16,7 +16,7 @@ const handler = async (req, res) => {
                     const {db} = await connectToDatabase();
                     const existingProject = await db.collection('Projects').findOne({projectName: project.projectName.trim()});
                     if (existingProject?._id && existingProject._id !== Number(id)) return res.status(400).json({message: 'المشروع موجود بالفعل'});
-                    const basePath = `./static/images/${id}`;
+                    const basePath = `./public/static/images/${id}`;
                     const date = Date.now();
                     const dbImages = [];
                     for (let imageObject of project.images) {
@@ -55,7 +55,6 @@ const handler = async (req, res) => {
     } else {
         return res.status(403).json({message: 'رجاء تسجيل الدخول أولا'})
     }
-
 }
 
 export default handler;
@@ -63,7 +62,7 @@ export default handler;
 export const config = {
     api: {
         bodyParser: {
-            sizeLimit: '10mb'
+            sizeLimit: '5mb'
         }
     }
 }

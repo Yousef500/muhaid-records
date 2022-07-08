@@ -7,7 +7,7 @@ const handler = async (req, res) => {
     if (id) {
         try {
             const {db} = await connectToDatabase();
-            await fs.promises.rm(`./static/images/${id}`, {recursive: true, force: true})
+            await fs.promises.rm(`.public/static/images/${id}`, {recursive: true, force: true})
             await db.collection('Projects').deleteOne({_id: id});
             return res.status(200).json();
         } catch (e) {

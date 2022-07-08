@@ -1,5 +1,5 @@
 import {AddCircleOutline} from "@mui/icons-material";
-import {Button, Container, Grid} from "@mui/material";
+import {Button, Container, Grid, Paper} from "@mui/material";
 import fs from "fs";
 import Head from "next/head";
 import Link from "next/link";
@@ -44,7 +44,7 @@ export async function getServerSideProps(ctx) {
                     // sort: {createdAt: -1},
                     skip: skipParams,
                     limit: perPage,
-                    hint: "home_page",
+                    "hint": "home_page",
                 }
             )
             .project(projection);
@@ -105,32 +105,38 @@ export default function Home({projects, count, pageNumber, perPage}) {
                 <link rel="icon" href="/mceicon.png"/>
             </Head>
 
-            <Container maxWidth={"fluid"}>
+            <Container maxWidth={false} sx={{mb: 5, mt: 7, pl: 3}}>
                 <Grid
+                    component={Paper}
+                    py={5}
+                    pl={1}
+                    pr={2}
+                    sx={{borderRadius: 10}}
+                    elevation={6}
                     container
                     alignItems="center"
                     justifyContent="center"
-                    spacing={{xs: 1, sm: 2}}
-                    m={"auto"}
+                    spacing={{xs: 1}}
                 >
                     <Grid item xs={12}>
                         <SearchComponent/>
                     </Grid>
 
-                    <Grid item xs={4}/>
-                    <Grid item xs={4}>
+                    <Grid item xs={3}/>
+                    <Grid item xs={6}>
                         <Link href={"/add-project"}>
                             <Button
                                 fullWidth
                                 variant={"contained"}
                                 size={"large"}
                                 startIcon={<AddCircleOutline/>}
+                                sx={{borderRadius: 10}}
                             >
                                 إضافة مشروع
                             </Button>
                         </Link>
                     </Grid>
-                    <Grid item xs={4}/>
+                    <Grid item xs={3}/>
 
                     <Grid item xs={12}>
                         <Projects/>
