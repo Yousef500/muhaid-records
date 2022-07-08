@@ -33,6 +33,7 @@
     "react-dom": "^18.2.0",
     "react-dropzone-component": "^3.2.0",
     "react-hook-form": "^7.33.0",
+    "react-material-ui-carousel": "^3.4.2",
     "react-redux": "^8.0.2",
     "react-toastify": "^9.0.5",
     "redux-persist": "^6.0.0",
