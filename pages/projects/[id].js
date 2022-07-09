@@ -1,6 +1,6 @@
-import {connectToDatabase} from "../../lib/mongodb";
+import { connectToDatabase } from "../../lib/mongodb";
 import fs from "fs";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 import {
     Backdrop,
     Card,
@@ -19,19 +19,32 @@ import {
     SpeedDialAction,
     SpeedDialIcon,
     Tooltip,
-    Typography
+    Typography,
+    TableContainer,
+    Table,
+    TableRow,
+    TableCell,
+    TableBody,
+    Paper,
+    Divider,
 } from "@mui/material";
 import Carousel from "react-material-ui-carousel";
-import {ArrowLeft, ArrowRight, DeleteOutlined, EditOutlined, HomeOutlined} from "@mui/icons-material";
+import {
+    ArrowLeft,
+    ArrowRight,
+    DeleteOutlined,
+    EditOutlined,
+    HomeOutlined,
+} from "@mui/icons-material";
 import Link from "next/link";
 
 export async function getStaticProps(ctx) {
-    const {id} = ctx.params;
+    const { id } = ctx.params;
 
-    const {db} = await connectToDatabase();
+    const { db } = await connectToDatabase();
     const cursor = await db
         .collection("Projects")
-        .find({_id: Number(id)}, {"hint": "all_fields"});
+        .find({ _id: Number(id) }, { hint: "all_fields" });
     const project = (await cursor.toArray())[0];
     const images = [];
     for (let imageObject of project.images) {
@@ -44,21 +57,21 @@ export async function getStaticProps(ctx) {
 
     return {
         props: {
-            project: {...project, images: images},
+            project: { ...project, images: images },
         },
     };
 }
 
 export async function getStaticPaths() {
-    const {db} = await connectToDatabase();
+    const { db } = await connectToDatabase();
     const cursor = await db
         .collection("Projects")
-        .find({}, {"hint": "_id_"})
-        .project({_id: 1});
+        .find({}, { hint: "_id_" })
+        .project({ _id: 1 });
     const ids = await cursor.toArray();
     const paths = [];
     for (let projectId of ids) {
-        paths.push({params: {id: projectId._id.toString()}});
+        paths.push({ params: { id: projectId._id.toString() } });
     }
 
     return {
@@ -69,38 +82,68 @@ export async function getStaticPaths() {
 
 // const drawerWidth = 240;
 
-const ProjectDetails = ({project}) => {
+const ProjectDetails = ({ project }) => {
     const router = useRouter();
-    const {_id, images, mainImage, ...proj} = project ?? {};
+    const { _id, images, mainImage, ...proj } = project ?? {};
+    const table = [
+        { head: "اسم المشروع :", data: proj?.projectName },
+        { head: "عنوان المشروع :", data: proj?.projectAddress },
+        { head: "الأمانة :", data: proj?.municipality },
+        { head: "البلدية :", data: proj?.municipal },
+        { head: "الحي :", data: proj?.district },
+        { head: "اسم المالك :", data: proj?.ownerName },
+        { head: "رقم رخصة البناء :", data: proj?.permitNumber },
+        { head: "رقم قطعة الأرض :", data: proj?.plotNumber },
+        { head: "رقم المخطط :", data: proj?.schemeNumber },
+        { head: "نوع البناء :", data: proj?.conType },
+        { head: "وصف البناء :", data: proj?.conDesc },
+        { head: "عدد الأدوار :", data: proj?.floorCount },
+        { head: "مكتب المصمم المعتمد :", data: proj?.desOffice },
+        { head: "المكتب الهندسي المشرف :", data: proj?.superOffice },
+        { head: "مقاول البناء :", data: proj?.contractor },
+        { head: "اسم المهندس المشرف :", data: proj?.superEng },
+    ];
 
     const handleDelete = () => {
-        console.log('delete')
-    }
+        console.log("delete");
+    };
 
     const handleEdit = async () => {
-        await router.push(`/projects/edit-project/${project?._id}`)
-    }
+        await router.push(`/projects/edit-project/${project?._id}`);
+    };
 
     if (router.isFallback || !project) {
-        return <Backdrop
-            sx={{bgcolor: 'white', zIndex: (theme) => theme.zIndex.drawer + 1}}
-            open={true}
-        >
-            <CircularProgress color="secondary" size={200}/>
-        </Backdrop>
+        return (
+            <Backdrop
+                sx={{
+                    bgcolor: "white",
+                    zIndex: (theme) => theme.zIndex.drawer + 1,
+                }}
+                open={true}
+            >
+                <CircularProgress color="secondary" size={200} />
+            </Backdrop>
+        );
     }
 
     return (
         <Container
             maxWidth={false}
-            sx={{mb: 5, mt: 7, pl: {xs: 3, sm: 3, md: 3}}}
+            sx={{ mb: 5, mt: 7, pl: { xs: 3, sm: 3, md: 3 }, pb: 5 }}
         >
-            <Tooltip title={'الرئيسية'}>
-                <Fab sx={{position: 'absolute', top: 10, right: {xs: '42%', sm: '47%', lg: '48%', xl: '49%'}}}
-                     color={'inherit'} size={'large'}>
-                    <Link href={'/?currentPage=1&pageSize=5'}>
+            <Tooltip title={"الرئيسية"}>
+                <Fab
+                    sx={{
+                        position: "absolute",
+                        top: 10,
+                        right: { xs: "42%", sm: "47%", lg: "48%", xl: "49%" },
+                    }}
+                    color={"inherit"}
+                    size={"large"}
+                >
+                    <Link href={"/?currentPage=1&pageSize=5"}>
                         <IconButton>
-                            <HomeOutlined sx={{fontSize: 40}}/>
+                            <HomeOutlined sx={{ fontSize: 40 }} />
                         </IconButton>
                     </Link>
                 </Fab>
@@ -108,9 +151,9 @@ const ProjectDetails = ({project}) => {
 
             <Grid container mt={5}>
                 <Grid item xs={12}>
-                    <Card>
+                    <Card sx={{ mb: -2, borderRadius: 10 }}>
                         <CardHeader
-                            sx={{mt: 3}}
+                            sx={{ mt: 3 }}
                             title={
                                 <Grid
                                     container
@@ -125,12 +168,12 @@ const ProjectDetails = ({project}) => {
                         />
                         <Carousel
                             sx={{
-                                marginTop: {xs: 5, lg: 10},
-                                marginX: {xs: 0, lg: 13},
-                                px: {xs: 0, lg: 10},
+                                marginTop: { xs: 5, lg: 10 },
+                                marginX: { xs: 0, lg: 13 },
+                                px: { xs: 0, lg: 10 },
                             }}
-                            NextIcon={<ArrowLeft sx={{fontSize: 40}}/>}
-                            PrevIcon={<ArrowRight sx={{fontSize: 40}}/>}
+                            NextIcon={<ArrowLeft sx={{ fontSize: 40 }} />}
+                            PrevIcon={<ArrowRight sx={{ fontSize: 40 }} />}
                             width={"70rem"}
                             height={"40rem"}
                             navButtonsAlwaysVisible={true}
@@ -147,27 +190,213 @@ const ProjectDetails = ({project}) => {
                             ))}
                         </Carousel>
                         <CardContent>
-                            <List>
-                                {proj &&
-                                    Object.values(proj).map((entry, ind) => (
-                                        <ListItem key={ind}>
-                                            <ListItemText>{entry}</ListItemText>
-                                        </ListItem>
-                                    ))}
-                            </List>
+                            <Grid
+                                container
+                                alignItems="center"
+                                justifyContent="center"
+                            >
+                                <TableContainer
+                                    component={Paper}
+                                    sx={{
+                                        background:
+                                            "linear-gradient(to left, #24243e, #302b63, #0f0c29)",
+                                        borderRadius: 10,
+                                    }}
+                                    elevation={10}
+                                >
+                                    <Table>
+                                        <TableBody>
+                                            <TableRow>
+                                                <TableCell
+                                                    width={"20%"}
+                                                    align="center"
+                                                    sx={{ color: "white" }}
+                                                >
+                                                    <Typography variant="h6">
+                                                        المعلومات الاساسية
+                                                    </Typography>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Table>
+                                                        {table
+                                                            .slice(0, 6)
+                                                            .map((row) => (
+                                                                <TableRow
+                                                                    key={
+                                                                        row.head
+                                                                    }
+                                                                >
+                                                                    <TableCell
+                                                                        width={
+                                                                            "20%"
+                                                                        }
+                                                                        sx={{
+                                                                            color: "white",
+                                                                        }}
+                                                                    >
+                                                                        <Typography variant="subtitle1">
+                                                                            {
+                                                                                row.head
+                                                                            }
+                                                                        </Typography>
+                                                                    </TableCell>
+                                                                    <TableCell
+                                                                        sx={{
+                                                                            color: "white",
+                                                                        }}
+                                                                    >
+                                                                        <Typography>
+                                                                            {
+                                                                                row.data
+                                                                            }
+                                                                        </Typography>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            ))}
+                                                    </Table>
+                                                </TableCell>
+                                            </TableRow>
+
+                                            <TableRow>
+                                                <TableCell
+                                                    align="center"
+                                                    sx={{ color: "white" }}
+                                                >
+                                                    <Typography variant="h6">
+                                                        معلومات المبنى
+                                                    </Typography>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Table>
+                                                        {table
+                                                            .slice(6, 12)
+                                                            .map((row) => (
+                                                                <TableRow
+                                                                    key={
+                                                                        row.head
+                                                                    }
+                                                                >
+                                                                    <TableCell
+                                                                        width={
+                                                                            "20%"
+                                                                        }
+                                                                        sx={{
+                                                                            color: "white",
+                                                                        }}
+                                                                    >
+                                                                        <Typography variant="body1">
+                                                                            {
+                                                                                row.head
+                                                                            }
+                                                                        </Typography>
+                                                                    </TableCell>
+                                                                    <TableCell
+                                                                        sx={{
+                                                                            color: "white",
+                                                                        }}
+                                                                    >
+                                                                        <Typography variant="body1">
+                                                                            {
+                                                                                row.data
+                                                                            }
+                                                                        </Typography>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            ))}
+                                                    </Table>
+                                                </TableCell>
+                                            </TableRow>
+
+                                            <TableRow>
+                                                <TableCell
+                                                    align="center"
+                                                    sx={{ color: "white" }}
+                                                >
+                                                    <Typography variant="h6">
+                                                        معلومات المكتب
+                                                    </Typography>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Table>
+                                                        {table
+                                                            .slice(12)
+                                                            .map((row) => (
+                                                                <TableRow
+                                                                    key={
+                                                                        row.head
+                                                                    }
+                                                                >
+                                                                    <TableCell
+                                                                        width={
+                                                                            "20%"
+                                                                        }
+                                                                        sx={{
+                                                                            color: "white",
+                                                                        }}
+                                                                    >
+                                                                        <Typography variant="subtitle1">
+                                                                            {
+                                                                                row.head
+                                                                            }
+                                                                        </Typography>
+                                                                    </TableCell>
+                                                                    <TableCell
+                                                                        sx={{
+                                                                            color: "white",
+                                                                        }}
+                                                                    >
+                                                                        <Typography variant="body1">
+                                                                            {
+                                                                                row.data
+                                                                            }
+                                                                        </Typography>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            ))}
+                                                    </Table>
+                                                </TableCell>
+                                            </TableRow>
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Grid>
                         </CardContent>
                     </Card>
                 </Grid>
             </Grid>
-            <SpeedDial ariaLabel={'options'} direction={'right'} sx={{position: 'absolute', top: 15, left: 0}}
-                       icon={<SpeedDialIcon/>}
-                       FabProps={{
-                           color: 'secondary'
-                       }}>
-                <SpeedDialAction tooltipTitle={'تعديل'}
-                                 icon={<EditOutlined sx={{fontSize: 25}} color={"secondary"}/>} onClick={handleEdit}/>
-                <SpeedDialAction tooltipTitle={'حذف'} icon={<DeleteOutlined sx={{fontSize: 25}} color={'error'}/>}
-                                 onClick={handleDelete}/>
+            <SpeedDial
+                ariaLabel={"options"}
+                direction={"right"}
+                sx={{
+                    position: "absolute",
+                    left: { xs: "42%", sm: "47%", lg: "48%", xl: "49%" },
+                }}
+                icon={<SpeedDialIcon />}
+                FabProps={{
+                    color: "info",
+                    sx: {
+                        width: 70,
+                        height: 70,
+                    },
+                }}
+            >
+                <SpeedDialAction
+                    tooltipTitle={"تعديل"}
+                    icon={
+                        <EditOutlined
+                            sx={{ fontSize: 25 }}
+                            color={"secondary"}
+                        />
+                    }
+                    onClick={handleEdit}
+                />
+                <SpeedDialAction
+                    tooltipTitle={"حذف"}
+                    icon={
+                        <DeleteOutlined sx={{ fontSize: 25 }} color={"error"} />
+                    }
+                    onClick={handleDelete}
+                />
             </SpeedDial>
         </Container>
     );
