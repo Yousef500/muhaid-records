@@ -1,30 +1,37 @@
-import { connectToDatabase } from "../../lib/mongodb";
+import {connectToDatabase} from "../../lib/mongodb";
 import fs from "fs";
-import { useRouter } from "next/router";
+import {useRouter} from "next/router";
 import {
+    Backdrop,
     Card,
+    CardContent,
     CardHeader,
     CardMedia,
+    CircularProgress,
     Container,
+    Fab,
     Grid,
-    Typography,
-    CardContent,
+    IconButton,
     List,
     ListItem,
     ListItemText,
-    Backdrop,
-    CircularProgress
+    SpeedDial,
+    SpeedDialAction,
+    SpeedDialIcon,
+    Tooltip,
+    Typography
 } from "@mui/material";
 import Carousel from "react-material-ui-carousel";
-import { ArrowLeft, ArrowRight } from "@mui/icons-material";
+import {ArrowLeft, ArrowRight, DeleteOutlined, EditOutlined, HomeOutlined} from "@mui/icons-material";
+import Link from "next/link";
 
 export async function getStaticProps(ctx) {
-    const { id } = ctx.params;
+    const {id} = ctx.params;
 
-    const { db } = await connectToDatabase();
+    const {db} = await connectToDatabase();
     const cursor = await db
         .collection("Projects")
-        .find({ _id: Number(id) }, { "hint": "all_fields" });
+        .find({_id: Number(id)}, {"hint": "all_fields"});
     const project = (await cursor.toArray())[0];
     const images = [];
     for (let imageObject of project.images) {
@@ -37,21 +44,21 @@ export async function getStaticProps(ctx) {
 
     return {
         props: {
-            project: { ...project, images: images },
+            project: {...project, images: images},
         },
     };
 }
 
 export async function getStaticPaths() {
-    const { db } = await connectToDatabase();
+    const {db} = await connectToDatabase();
     const cursor = await db
         .collection("Projects")
-        .find({}, { "hint": "_id_" })
-        .project({ _id: 1 });
+        .find({}, {"hint": "_id_"})
+        .project({_id: 1});
     const ids = await cursor.toArray();
     const paths = [];
     for (let projectId of ids) {
-        paths.push({ params: { id: projectId._id.toString() } });
+        paths.push({params: {id: projectId._id.toString()}});
     }
 
     return {
@@ -62,29 +69,48 @@ export async function getStaticPaths() {
 
 // const drawerWidth = 240;
 
-const ProjectDetails = ({ project }) => {
+const ProjectDetails = ({project}) => {
     const router = useRouter();
-    const {_id, images, mainImage, ...proj } = project ?? {};
-    console.log(project)
+    const {_id, images, mainImage, ...proj} = project ?? {};
 
-    if (router.isFallBack || !project) {
+    const handleDelete = () => {
+        console.log('delete')
+    }
+
+    const handleEdit = async () => {
+        await router.push(`/projects/edit-project/${project?._id}`)
+    }
+
+    if (router.isFallback || !project) {
         return <Backdrop
-                            sx={{bgcolor: 'white', zIndex: (theme) => theme.zIndex.drawer + 1}}
-                            open={true}
-                        >
-                            <CircularProgress color="secondary" size={200}/>
-                        </Backdrop>
+            sx={{bgcolor: 'white', zIndex: (theme) => theme.zIndex.drawer + 1}}
+            open={true}
+        >
+            <CircularProgress color="secondary" size={200}/>
+        </Backdrop>
     }
 
     return (
         <Container
             maxWidth={false}
-            sx={{ mb: 5, mt: 7, pl: { xs: 3, sm: 3, md: 3 } }}
+            sx={{mb: 5, mt: 7, pl: {xs: 3, sm: 3, md: 3}}}
         >
-            <Grid container>
+            <Tooltip title={'الرئيسية'}>
+                <Fab sx={{position: 'absolute', top: 10, right: {xs: '42%', sm: '47%', lg: '48%', xl: '49%'}}}
+                     color={'inherit'} size={'large'}>
+                    <Link href={'/?currentPage=1&pageSize=5'}>
+                        <IconButton>
+                            <HomeOutlined sx={{fontSize: 40}}/>
+                        </IconButton>
+                    </Link>
+                </Fab>
+            </Tooltip>
+
+            <Grid container mt={5}>
                 <Grid item xs={12}>
                     <Card>
                         <CardHeader
+                            sx={{mt: 3}}
                             title={
                                 <Grid
                                     container
@@ -99,26 +125,14 @@ const ProjectDetails = ({ project }) => {
                         />
                         <Carousel
                             sx={{
-                                marginTop: { xs: 5, lg: 10 },
-                                marginX: { xs: 0, lg: 13 },
-                                px: { xs: 0, lg: 10 },
+                                marginTop: {xs: 5, lg: 10},
+                                marginX: {xs: 0, lg: 13},
+                                px: {xs: 0, lg: 10},
                             }}
-                            NextIcon={<ArrowLeft sx={{ fontSize: 40 }} />}
-                            PrevIcon={<ArrowRight sx={{ fontSize: 40 }} />}
+                            NextIcon={<ArrowLeft sx={{fontSize: 40}}/>}
+                            PrevIcon={<ArrowRight sx={{fontSize: 40}}/>}
                             width={"70rem"}
                             height={"40rem"}
-                            // NavButtonsProps={{
-                            //     style: {
-                            //         color: 'black'
-                            //     }
-                            // }}
-                            // navButtonsWrapperProps={{
-                            //     style: {
-                            //         background: 'black',
-                            //         height: '50rem',
-                            //         opacity: 0.2
-                            //     }
-                            // }}
                             navButtonsAlwaysVisible={true}
                         >
                             {project?.images?.map((image, i) => (
@@ -145,6 +159,16 @@ const ProjectDetails = ({ project }) => {
                     </Card>
                 </Grid>
             </Grid>
+            <SpeedDial ariaLabel={'options'} direction={'right'} sx={{position: 'absolute', top: 15, left: 0}}
+                       icon={<SpeedDialIcon/>}
+                       FabProps={{
+                           color: 'secondary'
+                       }}>
+                <SpeedDialAction tooltipTitle={'تعديل'}
+                                 icon={<EditOutlined sx={{fontSize: 25}} color={"secondary"}/>} onClick={handleEdit}/>
+                <SpeedDialAction tooltipTitle={'حذف'} icon={<DeleteOutlined sx={{fontSize: 25}} color={'error'}/>}
+                                 onClick={handleDelete}/>
+            </SpeedDial>
         </Container>
     );
 };

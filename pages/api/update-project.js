@@ -41,6 +41,7 @@ const handler = async (req, res) => {
                     const dbRes = await db.collection('Projects').updateOne(query, updatedDocument);
                     if (dbRes.modifiedCount > 0) {
                         await res.revalidate(`/projects/edit-project/${id}`);
+                        await res.revalidate(`/projects/${id}`);
                         return res.status(200).json()
                     } else {
                         console.log(dbRes)
