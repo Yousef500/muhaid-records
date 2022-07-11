@@ -20,6 +20,7 @@ import {deleteProject} from "../src/app/slices/projectsSlice";
 import {useState} from "react";
 import {LoadingButton} from "@mui/lab";
 import Link from "next/link";
+import muAxios from '../lib/axios-config'
 
 const ProjectCard = ({name, description, img, id}) => {
     const dispatch = useDispatch();
@@ -27,14 +28,17 @@ const ProjectCard = ({name, description, img, id}) => {
     const [loading, setLoading] = useState(false);
     const {pageNumber, pageSize} = useSelector(state => state.projects)
 
-    const handleDownload = () => {
+    const handleDownload = async () => {
         try {
             const aTag = document.createElement("a");
-            aTag.href = `/api/testcreatepdf?name=${name}&description=${description}`;
-            aTag.target = '_blank';
+            aTag.href = `/api/first-report?id=${id}`;
+            aTag.download= `تقرير ${name}`
             document.body.appendChild(aTag);
             aTag.click();
             document.body.removeChild(aTag);
+            // const res = await muAxios.post('/first-report', {
+            //     data: data.project
+            // })
         } catch (e) {
             toast.error('لقد حدث خطأ ما')
         }
