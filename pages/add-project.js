@@ -5,7 +5,8 @@ import {
     Grid,
     List,
     ListItem,
-    ListItemButton, Paper,
+    ListItemButton,
+    Paper,
     Step,
     StepButton,
     Stepper,
@@ -36,6 +37,7 @@ export async function getStaticProps() {
 const AddProject = () => {
     const [activeStep, setActiveStep] = useState(0);
     const [loading, setLoading] = useState(false);
+    const [imageMissing, setImageMissing] = useState(false)
     const [compressedImages, setCompressedImages] = useState([]);
     const {
         register,
@@ -86,14 +88,19 @@ const AddProject = () => {
 
     const handleCreateProject = async (data) => {
         setLoading(true);
-        try {
-            const res = await muAxios.post("/save-project", {
-                newProject: {...data, images: compressedImages},
-            });
-            await router.push("/?currentPage=1&pageSize=5");
-            toast.success("تم إضافة المشروع بنجاح");
-        } catch (e) {
-            toast.error(e.response.data.message ?? "لقد حدث خطأ ما");
+        if (compressedImages.length !== 0) {
+            setImageMissing(false);
+            try {
+                const res = await muAxios.post("/save-project", {
+                    newProject: {...data, images: compressedImages},
+                });
+                await router.push("/projects?currentPage=1&pageSize=5");
+                toast.success("تم إضافة المشروع بنجاح");
+            } catch (e) {
+                toast.error(e.response.data.message ?? "لقد حدث خطأ ما");
+            }
+        } else {
+            setImageMissing(true)
         }
         setLoading(false);
     };
@@ -103,12 +110,13 @@ const AddProject = () => {
     };
 
     const handleCancel = async () => {
-        await router.push("/?currentPage=1&pageSize=5");
+        await router.push("/projects?currentPage=1&pageSize=5");
     };
 
     return (
         <Container maxWidth={false} sx={{pl: 3}}>
-            <Grid container component={Paper} elevation={6} spacing={1} padding={{xs: 3, sm: 5, md: 15}} my={{xs: 1, sm: 10}}
+            <Grid container component={Paper} elevation={6} spacing={1} padding={{xs: 3, sm: 5, md: 15}}
+                  my={{xs: 1, sm: 10}}
                   sx={{borderRadius: 10}}>
                 <Grid item xs={12}>
                     <Grid
@@ -184,6 +192,7 @@ const AddProject = () => {
                                     >
                                         رفع صورة
                                     </Button>
+                                    {imageMissing && <Typography color={'error'}>الصورة مطلوبة</Typography>}
                                 </label>
                             </Grid>
 

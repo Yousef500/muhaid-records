@@ -28,7 +28,7 @@ const handler = async (req, res) => {
         }, {
             "wildcardProjection": {
                 _id: 1,
-                mainImage: 0
+                mainImage: 0,
             },
             name: 'all_fields'
         });

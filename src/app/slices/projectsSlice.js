@@ -10,6 +10,13 @@ const deleteProject = createAsyncThunk(
     }
 )
 
+// const searchProjects = createAsyncThunk(
+//     'searchProjects',
+//     async ({searchTerm, pageNumber, pageSize}, thunkApi) => {
+//         const {data} =
+//     }
+// )
+
 export const projectsSlice = createSlice({
     name: 'projects',
     initialState: {

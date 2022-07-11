@@ -133,7 +133,7 @@ const EditProject = ({project, id}) => {
         setLoading(true)
         try {
             const res = await muAxios.post('/update-project', {project: {...data, images: compressedImages}, id});
-            await router.push('/?currentPage=1&pageSize=5')
+            await router.push('/projects?currentPage=1&pageSize=5')
             toast.success('تم إضافة المشروع بنجاح')
         } catch (e) {
             toast.error(e.response.data.message ?? 'لقد حدث خطأ ما')
@@ -146,7 +146,7 @@ const EditProject = ({project, id}) => {
     }
 
     const handleCancel = async () => {
-        await router.push('/?currentPage=1&pageSize=5')
+        await router.push('/projects?currentPage=1&pageSize=5')
     }
 
     if (router.isFallback) {

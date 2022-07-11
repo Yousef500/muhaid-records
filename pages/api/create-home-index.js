@@ -4,7 +4,6 @@ const handler = async (req, res) => {
     const {db} = await connectToDatabase();
     try {
         const result = await db.collection('Projects').createIndex({
-            createdAt: -1,
             "mainImage.**": "text",
             projectName: "text",
             projectAddress: "text",

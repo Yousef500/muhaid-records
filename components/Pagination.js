@@ -10,7 +10,7 @@ const CustomPagination = () => {
 
     const handleChange = async (e, val) => {
         dispatch(setPagination({pageNumber: val}));
-        if (pageNumber !== val) await router.push(`?currentPage=${val}&pageSize=${pageSize}`)
+        if (pageNumber !== val) await router.push(`/projects?currentPage=${val}&pageSize=${pageSize}`)
     }
     return (
         <Grid
