@@ -20,16 +20,16 @@ const handler = async (req, res) => {
                 if (project?._id) return res.status(400).json({message: "المشروع موجود بالفعل"});
                 const counter = await db.collection("Counters").findOneAndUpdate({_id: "projectId"}, {$inc: {sequence_value: 1}});
                 const sequenceValue = counter.value.sequence_value;
-                const basePath = `./public/static/images/${sequenceValue}`;
-                await fs.promises.mkdir(`${basePath}`, {recursive: true});
+                const basePath = `/static/images/${sequenceValue}`;
+                await fs.promises.mkdir(`./public${basePath}`, {recursive: true});
 
                 const dbImages = [];
                 for (let imageObject of newProject.images) {
                     const base64Image = imageObject.src;
                     const imageBuffer = Buffer.from(base64Image.split("base64,")[1], "base64");
-                    await fs.promises.writeFile(`${basePath}/${imageObject.name}`, imageBuffer);
+                    await fs.promises.writeFile(`./public${basePath}/${imageObject.name}`, imageBuffer);
                     dbImages.push({
-                        src: `${basePath}/${imageObject.name}`,
+                        src: `.${basePath}/${imageObject.name}`,
                         name: imageObject.name,
                         type: imageObject.type,
                     });

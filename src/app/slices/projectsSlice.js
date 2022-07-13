@@ -1,14 +1,16 @@
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import muAxios from "../../../lib/axios-config";
 
 const deleteProject = createAsyncThunk(
-    'deleteProject',
-    async ({id, pageNumber, pageSize}, thunkApi) => {
-        const response = await muAxios.post('/delete-project', {id});
-        const {data} = await muAxios.get(`/fetch-projects?currentPage=${pageNumber}&pageSize=${pageSize}`);
+    "deleteProject",
+    async ({ id, pageNumber, pageSize }, thunkApi) => {
+        const response = await muAxios.post("/delete-project", { id });
+        const { data } = await muAxios.get(
+            `/fetch-projects?currentPage=${pageNumber}&pageSize=${pageSize}`
+        );
         return data;
     }
-)
+);
 
 // const searchProjects = createAsyncThunk(
 //     'searchProjects',
@@ -18,21 +20,20 @@ const deleteProject = createAsyncThunk(
 // )
 
 export const projectsSlice = createSlice({
-    name: 'projects',
+    name: "projects",
     initialState: {
         projects: [],
         count: 0,
         pageSize: 5,
-        pageNumber: 1
+        pageNumber: 1,
     },
     reducers: {
         setProjects: (state, action) => {
-            const {projects, count, pageNumber, perPage} = action.payload;
+            const { projects, count, pageNumber, perPage } = action.payload;
             state.projects = projects;
             state.count = count;
             state.pageNumber = pageNumber;
             state.pageSize = perPage;
-
         },
         setPagination: (state, action) => {
             state.count = action.payload.count ?? state.count;
@@ -41,18 +42,18 @@ export const projectsSlice = createSlice({
         },
         addProject: (state, action) => {
             state.projects.unshift(action.payload);
-            state.count++
-        }
+            state.count++;
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(deleteProject.fulfilled, (state, action) => {
-            state.projects = action.payload.projects
-            state.count = action.payload.count
-        })
-    }
+            state.projects = action.payload.projects;
+            state.count = action.payload.count;
+        });
+    },
 });
 
-export const {setProjects, setPagination, addProject} = projectsSlice.actions;
-export {deleteProject};
+export const { setProjects, setPagination, addProject } = projectsSlice.actions;
+export { deleteProject };
 
 export default projectsSlice.reducer;

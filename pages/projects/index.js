@@ -1,17 +1,16 @@
-import {AddCircleOutline} from "@mui/icons-material";
-import {Button, Container, Grid, Paper} from "@mui/material";
-import fs from "fs";
+import { AddCircleOutline } from "@mui/icons-material";
+import { Button, Container, Grid, Paper } from "@mui/material";
+import Filer from "filer";
 import Head from "next/head";
 import Link from "next/link";
-import {useEffect} from "react";
-import {useDispatch} from "react-redux";
-import {connectToDatabase} from "../../lib/mongodb";
-import {setProjects} from "../../src/app/slices/projectsSlice";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import Navbar from "../../components/Navbar";
-import SearchComponent from "../../components/Search";
-import Projects from "../../components/Projects";
 import CustomPagination from "../../components/Pagination";
-
+import Projects from "../../components/Projects";
+import SearchComponent from "../../components/Search";
+import { connectToDatabase } from "../../lib/mongodb";
+import { setProjects } from "../../src/app/slices/projectsSlice";
 
 export async function getServerSideProps(ctx) {
     const accessToken = ctx.req.cookies.access_token;
@@ -25,7 +24,7 @@ export async function getServerSideProps(ctx) {
     }
 
     try {
-        const {currentPage, pageSize, searchTerm} = ctx.query;
+        const { currentPage, pageSize, searchTerm } = ctx.query;
 
         const pageNumber = Number(currentPage);
         const perPage = Number(pageSize);
@@ -35,17 +34,16 @@ export async function getServerSideProps(ctx) {
             projectAddress: 1,
             mainImage: 1,
         };
-        const {db} = await connectToDatabase();
+        const { db } = await connectToDatabase();
         const count = await db.collection("Projects").estimatedDocumentCount();
         let cursor;
         if (searchTerm) {
             cursor = await db
                 .collection("Projects")
                 .find(
-                    {$text: {$search: `\"${searchTerm}\"`}},
+                    { $text: { $search: `\"${searchTerm}\"` } },
                     {
-
-                        sort: {createdAt: -1},
+                        sort: { createdAt: -1 },
                         skip: skipParams,
                         limit: perPage,
                     }
@@ -57,36 +55,30 @@ export async function getServerSideProps(ctx) {
                 .find(
                     {},
                     {
-                        sort: {createdAt: -1},
+                        sort: { createdAt: -1 },
                         skip: skipParams,
                         limit: perPage,
-                        "hint": "home_page",
+                        hint: "home_page",
                     }
                 )
                 .project(projection);
         }
-        const initialProjects = await cursor.toArray();
-        const projects = [];
-        for (let proj of initialProjects) {
-            const image = await fs.promises.readFile(proj.mainImage.src, "base64");
-            projects.push({
-                ...proj,
-                mainImage: {
-                    ...proj.mainImage,
-                    src: `data:${proj.mainImage.type};base64,${image}`
-                }
-            })
-        }
-        // const projects = initialProjects.map(async (proj) => {
-        //     const image = await fs.promises.readFile(proj.mainImage.src, "base64");
-        //     return {
+        const projects = await cursor.toArray();
+        // const initialProjects = await cursor.toArray();
+        // const projects = [];
+        // for (let proj of initialProjects) {
+        //     const image = await fs.promises.readFile(
+        //         proj.mainImage.src,
+        //         "base64"
+        //     );
+        //     projects.push({
         //         ...proj,
         //         mainImage: {
         //             ...proj.mainImage,
         //             src: `data:${proj.mainImage.type};base64,${image}`,
         //         },
-        //     };
-        // });
+        //     });
+        // }
 
         return {
             props: {
@@ -97,7 +89,7 @@ export async function getServerSideProps(ctx) {
             },
         };
     } catch (e) {
-        console.error({e});
+        console.error({ e });
         return {
             props: {
                 projects: [],
@@ -106,61 +98,113 @@ export async function getServerSideProps(ctx) {
     }
 }
 
-export default function HomePage({projects, count, pageNumber, perPage}) {
+export default function HomePage({ projects, count, pageNumber, perPage }) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(setProjects({projects, count, pageNumber, perPage}));
+        const pProjects = [];
+        const setImages = async () => {
+            try {
+                for (let proj of projects) {
+                    // const { data } = await axios.get(proj.mainImage.src, {
+                    //     responseType: "blob",
+                    // });
+
+                    const fs = new Filer.FileSystem();
+
+                    const data = await fs.promises.readFile(
+                        proj.mainImage.src,
+                        "base64"
+                    );
+
+                    console.log({ data });
+                    // const file = new File([data], proj.mainImage.name, {
+                    //     type: proj.mainImage.type,
+                    // });
+                    // console.log(file)
+                    // const blob = new Blob([file], {type: file.type})
+                    // console.log(blob)
+                    // const blob = new Blob([data], {
+                    //     type: proj.mainImage.type,
+                    // });
+
+                    // const reader = new FileReader();
+                    // reader.readAsDataURL(blob);
+                    // reader.onload = () => console.log({ res: reader.result });
+                    pProjects.push({
+                        ...proj,
+                        mainImage: {
+                            ...proj.mainImage,
+                            src: URL.createObjectURL(blob),
+                        },
+                    });
+                }
+                dispatch(
+                    setProjects({
+                        projects: pProjects,
+                        count,
+                        pageNumber,
+                        perPage,
+                    })
+                );
+            } catch (e) {
+                console.log({ e });
+            }
+        };
+        setImages();
     });
 
     return (
         <>
-            <Navbar/>
+            <Navbar />
             <Head>
                 <title>سجلَات المُحايد</title>
-                <meta name="description" content="Al Muhaid Redocrds"/>
-                <link rel="icon" href="/mceicon.png"/>
+                <meta name="description" content="Al Muhaid Redocrds" />
+                <link rel="icon" href="/mceicon.png" />
             </Head>
 
-            <Container maxWidth={false} sx={{mb: 5, mt: 7, pl: {xs: 3, sm: 3, md: 3}}}>
+            <Container
+                maxWidth={false}
+                sx={{ mb: 5, mt: 7, pl: { xs: 3, sm: 3, md: 3 } }}
+            >
                 <Grid
                     component={Paper}
                     py={5}
                     pl={1}
                     pr={2}
-                    sx={{borderRadius: 10}}
+                    sx={{ borderRadius: 10 }}
                     elevation={6}
                     container
                     alignItems="center"
                     justifyContent="center"
-                    spacing={{xs: 1}}
+                    spacing={{ xs: 1 }}
                 >
                     <Grid item xs={12}>
-                        <SearchComponent/>
+                        <SearchComponent />
                     </Grid>
 
-                    <Grid item xs={3}/>
+                    <Grid item xs={3} />
                     <Grid item xs={6}>
                         <Link href={"/add-project"}>
                             <Button
                                 fullWidth
                                 variant={"contained"}
                                 size={"large"}
-                                startIcon={<AddCircleOutline/>}
-                                sx={{borderRadius: 10}}
+                                startIcon={<AddCircleOutline />}
+                                sx={{ borderRadius: 10 }}
                             >
                                 إضافة مشروع
                             </Button>
                         </Link>
                     </Grid>
-                    <Grid item xs={3}/>
+                    <Grid item xs={3} />
 
                     <Grid item xs={12}>
-                        <Projects/>
+                        <Projects />
                     </Grid>
 
                     <Grid item xs={12} my={4}>
-                        <CustomPagination/>
+                        <CustomPagination />
                     </Grid>
                 </Grid>
             </Container>
