@@ -1,20 +1,20 @@
 @font-face {
     font-family: "El Messiri";
-    src: url('../public/static/fonts/ElMessiri-Regular.ttf');
+    src: url("../public/static/fonts/ElMessiri-Regular.ttf");
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: "Rubik";
-    src: url('../public/static/fonts/ElMessiri-Bold.ttf');
+    src: url("../public/static/fonts/ElMessiri-Bold.ttf");
     font-weight: bold;
     font-style: normal;
 }
 
 @font-face {
     font-family: "Rubik";
-    src: url('../public/static/fonts/ElMessiri-Medium.ttf');
+    src: url("../public/static/fonts/ElMessiri-Medium.ttf");
     font-weight: normal;
     font-style: italic;
 }
@@ -23,7 +23,7 @@ html,
 body {
     padding: 0;
     margin: 0;
-    font-family: 'El Messiri', sans-serif;
+    font-family: "El Messiri", sans-serif;
     font-weight: normal;
     font-style: normal;
     /*background-image: url("../public/static/images/Taran.jpg");*/
@@ -37,13 +37,19 @@ body {
     /*background: #8E2DE2;  !* fallback for old browsers *!*/
     /*background: -webkit-linear-gradient(to right, #4A00E0, #8E2DE2);  !* Chrome 10-25, Safari 5.1-6 *!*/
     /*background: linear-gradient(to right, #4A00E0, #8E2DE2); !* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ *!*/
-    background: #0f0c29;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to left, #24243e, #302b63, #0f0c29);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to left, #24243e, #302b63, #0f0c29); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
-
-
-
+    background: #0f0c29; /* fallback for old browsers */
+    background: -webkit-linear-gradient(
+        to left,
+        #24243e,
+        #302b63,
+        #0f0c29
+    ); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(
+        to left,
+        #24243e,
+        #302b63,
+        #0f0c29
+    ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 /* width */
 ::-webkit-scrollbar {
@@ -71,5 +77,3 @@ body {
     background-size: cover;
     background-position: center;
 }
-
-
