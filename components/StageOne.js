@@ -1,22 +1,22 @@
 import {
-    TableRow,
-    TableCell,
-    Typography,
     Accordion,
-    AccordionSummary,
     AccordionDetails,
-    TableContainer,
+    AccordionSummary,
     Table,
-    TableHead,
     TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography,
 } from "@mui/material";
-import { ExpandMore } from "@mui/icons-material";
+import {ExpandMore} from "@mui/icons-material";
 import Center from "./Center";
 
 const StageOne = ({rows}) => {
     return (
         <Accordion>
-            <AccordionSummary expandIcon={<ExpandMore />}>
+            <AccordionSummary expandIcon={<ExpandMore/>}>
                 <Center>
                     <Typography variant={"h5"}>المرحلة الأولى</Typography>
                 </Center>
@@ -24,42 +24,43 @@ const StageOne = ({rows}) => {
             <AccordionDetails>
                 <TableContainer>
                     <Table>
-                        <TableHead sx={{ backgroundColor: "#E2EFD9" }}>
+                        <TableHead sx={{backgroundColor: "#E2EFD9"}}>
                             <TableRow>
-                                <TableCell width={10}></TableCell>
-                                <TableCell align="left">
+                                <TableCell align="left" colSpan={3}>
                                     <Typography variant={"h5"}>
                                         قبل صب الأساسات
                                     </Typography>
                                 </TableCell>
-                                <TableCell></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            <TableRow
-                                sx={{
-                                    backgroundColor: "#FFC300",
-                                }}
-                            >
-                                <TableCell>
-                                    <Typography variant="h6">م</Typography>
-                                </TableCell>
-                                <TableCell>
-                                    <Typography variant="h6">
-                                        الإعداد
-                                    </Typography>
-                                </TableCell>
-                                <TableCell>
-                                    <Typography variant="h6">الحالة</Typography>
-                                </TableCell>
-                            </TableRow>
-                            {rows.map((title, index) => (
+                            {rows.map((row) => (
                                 <>
-                                    <TableRow>
-                                        <TableCell>{index + 1}</TableCell>
-                                        <TableCell>{title}</TableCell>
-                                        <TableCell>الحالة</TableCell>
+                                    <TableRow
+                                        sx={{
+                                            backgroundColor: "#FFC300",
+                                        }}
+                                    >
+                                        <TableCell>
+                                            <Typography variant="h6">م</Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography variant="h6">
+                                                {row.name}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography variant="h6">الحالة</Typography>
+                                        </TableCell>
                                     </TableRow>
+
+                                    {row.steps.map((step, index) => (
+                                        <TableRow>
+                                            <TableCell>{index + 1}</TableCell>
+                                            <TableCell>{step.name}</TableCell>
+                                            <TableCell>الحالة</TableCell>
+                                        </TableRow>
+                                    ))}
                                 </>
                             ))}
                         </TableBody>

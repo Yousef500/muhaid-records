@@ -1,31 +1,29 @@
-import {
-    Container,
-    Grid,
-    Paper, Typography
-} from "@mui/material";
+import {Container, Grid, Paper, Typography} from "@mui/material";
 import Center from "../../../components/Center";
 import StageOne from "../../../components/StageOne";
-import { connectToDatabase } from "../../../lib/mongodb";
+import {connectToDatabase} from "../../../lib/mongodb";
 
 export async function getServerSideProps(ctx) {
-    const { id } = ctx.query;
-    const { db } = await connectToDatabase();
+    const {id} = ctx.query;
+    const {db} = await connectToDatabase();
     const projectVisits = await db
         .collection("ProjectVisits")
-        .findOne({ projectID: Number(id) });
+        .findOne({projectID: Number(id)});
 
-    console.log(projectVisits[0]);
+    console.log(projectVisits);
     return {
         props: {
-            projectVisits,
+            visits: projectVisits.visits,
+            projectID: id
         },
     };
 }
 
-const Visits = ({ projectVisits }) => {
+const Visits = ({visits, projectID}) => {
+    console.log(visits.stageOne);
     return (
-        <Container maxWidth={false} sx={{ py: 5 }}>
-            <Paper elevation={10} sx={{ pt: 5 }}>
+        <Container maxWidth={false} sx={{py: 5}}>
+            <Paper elevation={10} sx={{pt: 5}}>
                 <Grid container spacing={1}>
                     <Grid item xs={12}>
                         <Center>
@@ -33,7 +31,7 @@ const Visits = ({ projectVisits }) => {
                         </Center>
                     </Grid>
                     <Grid item xs={12}>
-                        <StageOne />
+                        <StageOne rows={visits.stageOne.majorSteps}/>
                     </Grid>
                 </Grid>
             </Paper>
