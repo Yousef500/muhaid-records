@@ -1,4 +1,4 @@
-import {connectToDatabase} from "../../lib/mongodb";
+import {connectToDatabase} from "../../../lib/mongodb";
 import fs from "fs";
 import {useRouter} from "next/router";
 import {
@@ -15,7 +15,6 @@ import {
     DialogTitle,
     Fab,
     Grid,
-    IconButton,
     Paper,
     SpeedDial,
     SpeedDialAction,
@@ -44,7 +43,7 @@ import Link from "next/link";
 import {LoadingButton} from "@mui/lab";
 import {useState} from "react";
 import {toast} from "react-toastify";
-import muAxios from "../../lib/axios-config";
+import muAxios from "../../../lib/axios-config";
 
 export async function getStaticProps(ctx) {
     const {id} = ctx.params;
@@ -225,9 +224,7 @@ const ProjectDetails = ({project}) => {
                     size={"large"}
                 >
                     <Link href={"/projects?currentPage=1&pageSize=5"}>
-                        <IconButton>
-                            <HomeOutlined sx={{fontSize: 40}}/>
-                        </IconButton>
+                        <HomeOutlined sx={{fontSize: 40}}/>
                     </Link>
                 </Fab>
             </Tooltip>

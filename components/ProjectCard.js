@@ -3,16 +3,20 @@ import {
     Card,
     CardActions,
     CardContent,
+    CardHeader,
     CardMedia,
     Dialog,
     DialogActions,
     DialogTitle,
     Divider,
     Grid,
+    IconButton,
+    Menu,
+    MenuItem,
     Stack,
     Typography
 } from "@mui/material";
-import {Delete, Edit, Save} from "@mui/icons-material";
+import {Delete, Edit, MoreHoriz, Save} from "@mui/icons-material";
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import {toast} from "react-toastify";
 import {useDispatch, useSelector} from "react-redux";
@@ -20,19 +24,20 @@ import {deleteProject} from "../src/app/slices/projectsSlice";
 import {useState} from "react";
 import {LoadingButton} from "@mui/lab";
 import Link from "next/link";
-import muAxios from '../lib/axios-config'
 
 const ProjectCard = ({name, description, img, id}) => {
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [anchorEl, setAnchorEl] = useState();
+    const menuOpen = Boolean(anchorEl)
     const {pageNumber, pageSize} = useSelector(state => state.projects)
 
     const handleDownload = async () => {
         try {
             const aTag = document.createElement("a");
             aTag.href = `/api/first-report?id=${id}`;
-            aTag.download= `تقرير ${name}`
+            aTag.download = `تقرير ${name}`
             document.body.appendChild(aTag);
             aTag.click();
             document.body.removeChild(aTag);
@@ -44,8 +49,16 @@ const ProjectCard = ({name, description, img, id}) => {
         }
     }
 
+    const handleMenuOpen = (e) => {
+        setAnchorEl(e.currentTarget);
+    }
+
     const handleClose = () => {
         setOpen(false);
+    }
+
+    const handleMenuClose = () => {
+        setAnchorEl(null)
     }
 
     const handleOpen = () => {
@@ -69,8 +82,34 @@ const ProjectCard = ({name, description, img, id}) => {
     return (
         <>
             <Card sx={{my: 2}} elevation={6}>
+                <CardHeader action={
+                    <IconButton onClick={handleMenuOpen}>
+                        <MoreHoriz/>
+                    </IconButton>
+                }
+                />
+                <Menu
+                    open={menuOpen}
+                    anchorEl={anchorEl}
+                    onClose={handleMenuClose}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }}
+                >
+                    <Link href={`/projects/${id}/visits`}>
+                        <MenuItem onClick={handleMenuClose}>
+                            الزيارات
+                        </MenuItem>
+                    </Link>
+                </Menu>
                 <Link href={`/projects/${id}`}>
-                    <CardMedia sx={{"&:hover": {cursor: 'pointer'}}} component={'img'} src={img.src ?? '/static/images/Best.jpg'} height={320} width={500}
+                    <CardMedia sx={{"&:hover": {cursor: 'pointer'}}} component={'img'}
+                               src={img.src ?? '/static/images/Best.jpg'} height={320} width={500}
                                alt={'project-image'}/>
                 </Link>
                 <Divider/>

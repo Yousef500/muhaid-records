@@ -67,7 +67,7 @@ const AddProject = () => {
                 type: image[0].type,
                 resize: true,
             });
-            const src = data[0].prefix + data[0].data;
+            const src = data[0].prefix + data[0].data
             const name = data[0].alt;
             setCompressedImages([...compressedImages, {src: src, name: name, type: image[0].type}]);
             // const files = [...images].map(image => {

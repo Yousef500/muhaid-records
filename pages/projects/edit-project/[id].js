@@ -13,7 +13,8 @@ import {
     Grid,
     List,
     ListItem,
-    ListItemButton, Paper,
+    ListItemButton,
+    Paper,
     Step,
     StepButton,
     Stepper,
@@ -162,7 +163,8 @@ const EditProject = ({project, id}) => {
 
     return (
         <Container maxWidth={false}>
-            <Grid container spacing={1} m={'auto'} component={Paper} elevation={6} padding={{xs: 3, sm: 5, md: 15}} mt={5}>
+            <Grid container spacing={1} m={'auto'} component={Paper} elevation={6} padding={{xs: 3, sm: 5, md: 15}}
+                  mt={5}>
                 <Grid item xs={12}>
                     <Grid container spacing={0} direction={'column'} alignItems={'center'} justifyContent={'center'}>
                         <Typography variant={'h3'}>
